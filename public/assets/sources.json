@@ -1,0 +1,43 @@
+[
+  {
+    "file": "/assets/scene-landmark.jpg",
+    "title": "Wukang Mansion 20250504-2.jpg",
+    "location": "Wukang Mansion, Shanghai",
+    "author": "Suicasmo",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wukang_Mansion_20250504-2.jpg",
+    "changes": "EXIF orientation applied, resized, JPEG recompressed"
+  },
+  {
+    "file": "/assets/scene-street.jpg",
+    "title": "Wukang Road, Shanghai, May 2016.JPG",
+    "location": "Wukang Road, Shanghai",
+    "author": "SSYoung",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wukang_Road,_Shanghai,_May_2016.JPG",
+    "changes": "EXIF orientation applied, resized, JPEG recompressed"
+  },
+  {
+    "file": "/assets/scene-cafe.jpg",
+    "title": "A brunch spot at Anfu Rd.jpg",
+    "location": "Anfu Road, Shanghai",
+    "author": "RunningTurtle8964",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:A_brunch_spot_at_Anfu_Rd.jpg",
+    "changes": "EXIF orientation applied, resized, JPEG recompressed"
+  },
+  {
+    "file": "/assets/scene-evening.jpg",
+    "title": "Wulumuqi Rd. (M), Shanghai 20251228 01.jpg",
+    "location": "Wulumuqi Middle Road and Anfu Road intersection, Shanghai",
+    "author": "Vesekskiy",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wulumuqi_Rd._(M),_Shanghai_20251228_01.jpg",
+    "changes": "EXIF orientation applied, resized, JPEG recompressed",
+    "note": "Daytime photograph; the local filename is retained for compatibility"
+  }
+]

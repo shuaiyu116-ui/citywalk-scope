@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: citywalk-scope
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "18"
+
