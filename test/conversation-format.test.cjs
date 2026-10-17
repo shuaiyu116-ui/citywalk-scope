@@ -9,7 +9,8 @@ function mockModel(t,plans){
   global.fetch=async(url,options)=>{
     bodies.push(JSON.parse(options.body));
     assert.ok(bodies.length<=plans.length,'format correction must be bounded');
-    return new Response(JSON.stringify({choices:[{message:{content:JSON.stringify(plans[bodies.length-1])}}]}));
+    const plan=plans[bodies.length-1];
+    return new Response(JSON.stringify({choices:[{message:{content:typeof plan==='string'?plan:JSON.stringify(plan)}}]}));
   };
   return bodies;
 }
@@ -42,4 +43,29 @@ test('explicit conditions override malformed model values while direct HTTP inpu
   const result=await prepare({dayCount:4,startDate:'2026-10-20',companions:['children']});
   assert.equal(bodies.length,1);assert.deepEqual(result.explicitContext,{dayCount:4,startDate:'2026-10-20',companions:['children']});
   for(const context of [{companions:2},{companions:'两个人'},{startDate:'10月18日'}])assert.throws(()=>normalizeTripInput(context));
+});
+
+test('an invalid JSON response retries once and logs structure without response or request content',async t=>{
+  const warnings=t.mock.method(console,'warn',()=>{});
+  const marker='private-response-marker';
+  const bodies=mockModel(t,[marker,{city:'南京',conditions:{startDate:'2026-10-18'}}]);
+  const result=await prepare();
+  assert.equal(bodies.length,2);assert.equal(result.explicitContext.startDate,'2026-10-18');
+  assert.equal(warnings.mock.calls.length,1);
+  const log=JSON.stringify(warnings.mock.calls[0].arguments);
+  assert.ok(!log.includes(marker));assert.ok(!log.includes(pending.request));assert.ok(!log.includes('fixture-only'));
+  assert.match(log,/contentLength/);
+});
+
+test('JSON and condition format errors share the same single correction allowance',async t=>{
+  t.mock.method(console,'warn',()=>{});
+  const bodies=mockModel(t,['',{conditions:{companions:'两个人'}}]);
+  await assert.rejects(prepare(),error=>error.code==='MODEL_RESPONSE');
+  assert.equal(bodies.length,2);
+});
+
+test('whitespace around a complete JSON code fence is accepted without another model call',async t=>{
+  const bodies=mockModel(t,[' \n```JSON\n{"city":"南京","conditions":{"startDate":"2026-10-18"}}\n```\n ']);
+  const result=await prepare();
+  assert.equal(bodies.length,1);assert.equal(result.city,'南京');assert.equal(result.explicitContext.startDate,'2026-10-18');
 });

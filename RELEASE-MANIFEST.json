@@ -2,7 +2,7 @@
   "format": "citywalk-release",
   "version": 1,
   "release": "W14",
-  "builtAt": "2026-10-17T19:09:08.636Z",
+  "builtAt": "2026-10-17T19:22:17.073Z",
   "files": [
     {
       "path": ".dockerignore",
@@ -101,8 +101,8 @@
     },
     {
       "path": "docs/线上澄清回答修复-2026-10-18.md",
-      "bytes": 2578,
-      "sha256": "351e1d6a573fd92ebc834343f88af62e460f62f4d06cc2d10dc5169eca9cd554"
+      "bytes": 3568,
+      "sha256": "8b764d524dfc9b00db95f8ce3a34fb57bf4a1b897cae7e5f0c8323ae8746ea1c"
     },
     {
       "path": "docs/老师建议与优化方向整理.md",
@@ -131,8 +131,8 @@
     },
     {
       "path": "lib/conversation-planner.js",
-      "bytes": 21404,
-      "sha256": "0afe176038d04ed4f5cf84a4dde89d3001beec37dba3b473ebdae91fcec9ec62"
+      "bytes": 22417,
+      "sha256": "4e2e3f33b4e448ac1fa3220f4cda3e176d11e4fd0c69dac697ec3a4bb1cd045f"
     },
     {
       "path": "lib/conversation-preflight.js",
@@ -556,8 +556,8 @@
     },
     {
       "path": "test/conversation-format.test.cjs",
-      "bytes": 3173,
-      "sha256": "44824e14621669d03f41bc78cf6bd27c81d26d2c16facd3acf5a7258474369f6"
+      "bytes": 4608,
+      "sha256": "1b8336cb91d3810d157d30d8b4c11c697072fae9692399f88ee3d56f3f9a78f6"
     },
     {
       "path": "test/conversation-preflight.test.cjs",
