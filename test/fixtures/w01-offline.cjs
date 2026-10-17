@@ -5,7 +5,7 @@ global.fetch = async (url, options) => {
   if (String(url) !== process.env.DEEPSEEK_API_URL) throw new Error('W01 offline fixture: external request blocked');
   if (options.headers.Authorization.includes('fail-fixture')) throw new Error('Simulated model failure');
   const body = JSON.parse(options.body);
-  const user = body.messages[1].content;
+  const user = body.messages.find(message => message.role === 'user').content;
   let result;
   if (body.temperature === 0.2) {
     result = { city: '上海', durationMinutes: 120, maxWalkKm: 8, interests: ['街区'] };

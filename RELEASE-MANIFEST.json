@@ -2,7 +2,7 @@
   "format": "citywalk-release",
   "version": 1,
   "release": "W14",
-  "builtAt": "2026-10-17T18:12:08.109Z",
+  "builtAt": "2026-10-17T19:09:08.636Z",
   "files": [
     {
       "path": ".dockerignore",
@@ -21,13 +21,13 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 85009,
-      "sha256": "35ef507d225c34fd15d673c73888ee0f1a1a24c2aac4c739060cce52b6e2c969"
+      "bytes": 88447,
+      "sha256": "7b69d47d8da6c8e445acef1d0997d77a1e528cea6ac676a8408923115fe6de20"
     },
     {
       "path": "DEPLOY.md",
-      "bytes": 6033,
-      "sha256": "df337c6ca4768bdfafe237634e4e67515644df81e472e7ca136dc9f7ffc2ab2a"
+      "bytes": 6966,
+      "sha256": "e439e0cd174e074e87d2300a46641d6b2bb598c5d4f026617159e73f88e4cf4b"
     },
     {
       "path": "Dockerfile",
@@ -36,8 +36,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5764,
-      "sha256": "802a5300c0c76bca9c8b5e43e8bfccf8e0dcff13bd5a8bfc6ffcdcf49ce743b7"
+      "bytes": 6830,
+      "sha256": "0240d7713105188e39e18859c09e2e6602aa24782ef3b49edf1427ac6efc34fb"
     },
     {
       "path": "Start-Citywalk.cmd",
@@ -90,9 +90,19 @@
       "sha256": "c972d77845f1f7176b9408d2e7df1c3c45eccb10bd7ed60b78c9b02e5792660a"
     },
     {
+      "path": "docs/最新版上线-2026-10-18.md",
+      "bytes": 2989,
+      "sha256": "cef80deb8cf22ad92f6a3b4525812b3541168afabeb14cb48e9d9b2db833eee9"
+    },
+    {
       "path": "docs/演示与答辩.md",
       "bytes": 5845,
       "sha256": "a400506e252579ffa6d9e830fa406a73030f1da035c4f69ab67d98d4714a72ca"
+    },
+    {
+      "path": "docs/线上澄清回答修复-2026-10-18.md",
+      "bytes": 2578,
+      "sha256": "351e1d6a573fd92ebc834343f88af62e460f62f4d06cc2d10dc5169eca9cd554"
     },
     {
       "path": "docs/老师建议与优化方向整理.md",
@@ -121,8 +131,8 @@
     },
     {
       "path": "lib/conversation-planner.js",
-      "bytes": 19660,
-      "sha256": "c6ff287d436f96dd32ba37bbfe112170bfe793ec47458540cec6faf9dcba9f04"
+      "bytes": 21404,
+      "sha256": "0afe176038d04ed4f5cf84a4dde89d3001beec37dba3b473ebdae91fcec9ec62"
     },
     {
       "path": "lib/conversation-preflight.js",
@@ -221,8 +231,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1187,
-      "sha256": "32c1c1d4cd610e6accf18f6ca3293655453bf9423bdaa7afb880ea81cca20f69"
+      "bytes": 1221,
+      "sha256": "42b668eaeac87dee121bd6b72741a0b8cc6a007c1c0d09428f9eacb111aab2db"
     },
     {
       "path": "public/agent-client.mjs",
@@ -545,6 +555,11 @@
       "sha256": "e572638f42b236f58585cabff4692b7e67fae1efd8e225fbc5e2cfcbf4a43e46"
     },
     {
+      "path": "test/conversation-format.test.cjs",
+      "bytes": 3173,
+      "sha256": "44824e14621669d03f41bc78cf6bd27c81d26d2c16facd3acf5a7258474369f6"
+    },
+    {
       "path": "test/conversation-preflight.test.cjs",
       "bytes": 12655,
       "sha256": "d1edea6f51e3bcc4c890d572ed3ae837c4e29eee715859a3d6ba4b3c98af6c3b"
@@ -576,13 +591,13 @@
     },
     {
       "path": "test/fixtures/travel-plan-offline.cjs",
-      "bytes": 3843,
-      "sha256": "758f434cb7236a5ce03f7ad397048961cb2d55c964eba250b6be6a2723b21a49"
+      "bytes": 3877,
+      "sha256": "80418dbb26e955844749d4ecc771e526890784bb9473b2b3af18de7b5acfb5e2"
     },
     {
       "path": "test/fixtures/w01-offline.cjs",
-      "bytes": 1505,
-      "sha256": "c556e46c82d36ff2428aba2e9dcda84d3ff0d677f5a4242d83828e49d9965760"
+      "bytes": 1543,
+      "sha256": "4e2dd6567845b1c2b2567710dbecfa8fa5abee7b0450e86811579d79e84adcc4"
     },
     {
       "path": "test/fixtures/w02-offline.cjs",

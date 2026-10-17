@@ -22,7 +22,7 @@ global.fetch=async(url,options={})=>{
   }
   if(String(url).includes('overpass-api.de'))return new Response(JSON.stringify({elements:[{type:'node',id:123,...{lat:point(0).lat,lon:point(0).lng},tags:{name:names[0],opening_hours:'Tu-Su 09:00-17:00'}}]}));
   if(String(url)===process.env.DEEPSEEK_API_URL){
-    const body=JSON.parse(options.body),system=body.messages[0].content,input=JSON.parse(body.messages[1].content);
+    const body=JSON.parse(options.body),system=body.messages[0].content,input=JSON.parse(body.messages.find(message=>message.role==='user').content);
     if(body.temperature===0.15){
       if(input.current)return model({reply:'已按你选择的'+input.current.hotels.candidates.find(h=>h.id===input.current.hotels.selectedId)?.name+'保留住宿安排。'});
       if(!input.pending)return model({city:'上海',conditions:{dayCount:3},hotelPreferences:{requested:true},question:'酒店预算和入住日期是什么？',questionField:'hotelBudget'});
