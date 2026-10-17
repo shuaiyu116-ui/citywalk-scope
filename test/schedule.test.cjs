@@ -1,0 +1,110 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { spawn } = require('node:child_process');
+const { createItinerary, resolveTripContext, normalizeTripInput, applyTripContext } = require('../lib/itinerary');
+const core = import('../public/schedule.mjs');
+function make(context = {}) {
+  const route = createItinerary({ city: '上海', stops: ['A', 'B'].map(name => ({ name, city: '上海', time: '模型旧时间', location: { lat: 31, lng: 121 } })) }, resolveTripContext({ startDate: '2026-10-16', dailyStartTime: '09:00', dailyEndTime: '18:00', maxWalkKm: 3, ...context }));
+  route.legs[0] = { ...route.legs[0], status: 'routed', mode: 'walking', distanceMeters: 1000, durationMinutes: 20 };
+  for (const stop of route.stops) stop.visit = { stayMinutes: 30, restMinutes: 10, openingRules: { periods: [{ start: '10:00', end: '17:00' }], closedWeekdays: [], closedDates: [] } };
+  return route;
+}
+test('calendar validation and overnight context agree; pure scheduling includes waiting/rest and stable identity', async () => {
+  const { solveSchedule, applySchedule, normalizeVisit, validDate, stamp } = await core;
+  const input = normalizeTripInput({ dailyStartTime: '23:00', dailyEndTime: '02:00' });
+  assert.equal(applyTripContext({}, resolveTripContext(input)).durationMinutes, 180);
+  assert.throws(() => normalizeTripInput({ dailyStartTime: '09:00', dailyEndTime: '09:00' }));
+  assert.equal(validDate('2026-02-29'), false); assert.equal(validDate('2028-02-29'), true);
+  assert.deepEqual(stamp('2028-02-29', 1440), { date: '2028-03-01', time: '00:00', dayOffset: 1 });
+  assert.throws(() => normalizeVisit({ openingRules: { periods: [{ start: '09:00', end: '09:00' }] } }));
+  assert.throws(() => normalizeVisit({ stayMinutes: -1 }));
+  assert.throws(() => normalizeVisit({ openingRules: { periods: [{ start: '09:00', end: '17:00' }], closedDates: ['2026-02-30'] } }));
+  const route = make();
+  route.days.push({...route.days[0],id:'empty-day',index:2,date:'2026-10-17',stopIds:[],legIds:[]});
+  const original = JSON.stringify(route);
+  const result = solveSchedule(route);
+  assert.equal(JSON.stringify(route), original);
+  assert.equal(result.stops[0].schedule.waitMinutes, 60);
+  assert.equal(result.stops[0].schedule.visitEnd.time, '10:30');
+  assert.equal(result.stops[0].schedule.departure.time, '10:40');
+  assert.equal(result.stops[1].schedule.arrival.time, '11:00');
+  assert.equal(result.days[0].schedule.end.time, '11:40');
+  assert.equal(result.days[1].schedule.status, 'unplanned');
+  const ids = route.stops.map(s => s.id); applySchedule(route);
+  assert.deepEqual(route.stops.map(s => s.id), ids); assert.equal(route.revision.number, 1);
+});
+test('overnight hours use prior-day opening; date closures, weekdays and validity take precedence', async () => {
+  const { solveSchedule } = await core;
+  const route = make({ startDate: '2028-02-29', dailyStartTime: '23:30', dailyEndTime: '02:00' });
+  for (const s of route.stops) { s.visit.stayMinutes = 40; s.visit.restMinutes = 0; s.visit.openingRules.periods = [{ start: '22:00', end: '02:00' }]; }
+  let result = solveSchedule(route);
+  assert.equal(result.days[0].schedule.status, 'provisional');
+  assert.equal(result.stops[1].schedule.arrival.date, '2028-03-01');
+  assert.equal(result.stops[1].schedule.arrival.time, '00:30');
+  route.stops[1].visit.openingRules.closedDates = ['2028-03-01'];
+  assert.equal(solveSchedule(route).stops[1].schedule.checks.find(c => c.code === 'opening').status, 'conflict');
+  route.stops[1].visit.openingRules.closedDates = [];
+  route.stops[1].visit.openingRules.closedWeekdays = [3];
+  assert.equal(solveSchedule(route).stops[1].schedule.status, 'conflict');
+  route.stops[1].visit.openingRules.closedWeekdays = [];
+  route.stops[1].visit.openingRules.validTo = '2028-02-29';
+  assert.equal(solveSchedule(route).stops[1].schedule.status, 'unknown');
+  // Special closure also truncates a visit begun before midnight.
+  route.stops[0].visit.openingRules.closedDates = ['2028-03-01'];
+  const opening = solveSchedule(route).stops[0].schedule.checks.find(c => c.code === 'opening');
+  assert.equal(opening.status, 'conflict'); assert.equal(opening.suggestions[0].minutes, 30);
+});
+test('unknown/estimated transport, reported text, missing date and missing edges never become feasibility passes', async () => {
+  const { solveSchedule } = await core;
+  const route = make(); route.legs[0].status = 'unavailable';
+  let result = solveSchedule(route);
+  assert.equal(result.stops[1].schedule.arrival, null); assert.equal(result.days[0].schedule.end, null);
+  assert.equal(result.days[0].schedule.checks.find(c => c.code === 'walking-budget').status, 'unknown');
+  route.legs[0].status = 'estimated';
+  result = solveSchedule(route); assert.equal(result.days[0].schedule.status, 'unknown'); assert.ok(result.days[0].schedule.end);
+  route.legs[0].status = 'routed'; delete route.stops[0].visit;
+  route.stops[0].openingHours = { status: 'reported', text: '全天开放' };
+  result = solveSchedule(route); assert.equal(result.stops[0].schedule.waitMinutes, null);
+  assert.equal(result.stops[0].schedule.checks.find(c => c.code === 'opening').status, 'unknown');
+  route.days[0].date = null; assert.equal(solveSchedule(route).stops[1].schedule.status, 'unknown');
+  route.days[0].requestedWindow.start = null; assert.equal(solveSchedule(route).days[0].schedule.end, null);
+  route.days[0].requestedWindow.start = '09:00'; route.days[0].legIds = [];
+  assert.equal(solveSchedule(route).stops[1].schedule.arrival, null);
+});
+test('split opening windows, end/walking conflicts and actionable shortening recompute correctly', async () => {
+  const { solveSchedule } = await core;
+  const route = make({ dailyStartTime: '11:45', dailyEndTime: '13:00', maxWalkKm: .5 });
+  route.stops[0].visit.openingRules.periods = [{ start: '09:00', end: '12:00' }, { start: '13:00', end: '14:00' }];
+  let result = solveSchedule(route);
+  assert.equal(result.stops[0].schedule.waitMinutes, 75);
+  assert.equal(result.days[0].schedule.checks.find(c => c.code === 'end-window').status, 'conflict');
+  assert.equal(result.days[0].schedule.checks.find(c => c.code === 'walking-budget').status, 'conflict');
+  route.stops[0].visit.openingRules.periods.pop();
+  result = solveSchedule(route);
+  const suggestion = result.stops[0].schedule.checks.find(c => c.code === 'opening').suggestions[0];
+  assert.equal(suggestion.type, 'shorten-stay'); assert.equal(suggestion.minutes, 15);
+  route.stops[0].visit.stayMinutes = suggestion.minutes;
+  assert.equal(solveSchedule(route).stops[0].schedule.status, 'provisional');
+  route.legs[0].mode = 'taxi'; route.context.maxWalkKm = 0;
+  assert.equal(solveSchedule(route).days[0].schedule.checks.find(c => c.code === 'walking-budget').status, 'pass');
+});
+test('local HTTP accepts overnight context, then transport and schedule share portable data', async t => {
+  const child = spawn(process.execPath, ['--require', './test/fixtures/w03-offline.cjs', 'server.js'], { cwd: require('node:path').join(__dirname, '..'), env: { ...process.env, PORT: '0' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  t.after(() => child.kill());
+  const base = await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('startup timeout')), 10000);
+    child.once('error', reject); child.stdout.on('data', b => { const m = b.toString().match(/localhost:(\d+)/); if (m) { clearTimeout(timer); resolve(`http://localhost:${m[1]}`); } });
+  });
+  const post = (path, body) => fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const response = await post('/api/generate-route', { prompt: '上海', context: { startDate: '2026-12-31', dailyStartTime: '23:00', dailyEndTime: '02:00', maxWalkKm: 0 } });
+  assert.equal(response.status, 200);
+  const { route } = await response.json();
+  const { transportRequest, transportFingerprint, mergeTransport } = await import('../public/transport.mjs');
+  assert.ok(mergeTransport(route, await (await post('/api/transport-route', transportRequest(route))).json(), transportFingerprint(route)));
+  const { applySchedule } = await core; applySchedule(route);
+  assert.equal(route.days[0].schedule.deadline.date, '2027-01-01');
+  assert.equal(route.planning.scheduleStatus, 'conflict');
+  assert.equal(route.stops[0].schedule.arrival.time, '23:00');
+  assert.equal((await fetch(base + '/schedule.mjs')).status, 200);
+  assert.ok(JSON.parse(JSON.stringify(route)).days[0].schedule.checks.length);
+});

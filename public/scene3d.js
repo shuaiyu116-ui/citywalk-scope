@@ -1,5 +1,6 @@
 import * as THREE from '/vendor/three/three.module.js';
 import { OrbitControls } from '/vendor/three/OrbitControls.js';
+import { transportSegments } from '/transport.mjs';
 
 const COLORS = {
   ground: 0xeaf0ec,
@@ -38,20 +39,8 @@ function hashString(value) {
   return hash >>> 0;
 }
 
-function readWalkingCoordinates(route) {
-  const value = route?.walkingPath?.coordinates
-    ?? route?.walkingPath?.geometry?.coordinates
-    ?? route?.walkingPath?.route?.geometry?.coordinates;
-  if (!Array.isArray(value)) return [];
-  // Valhalla is returned as [latitude, longitude] for Leaflet. Other
-  // adapters may provide GeoJSON [longitude, latitude].
-  const valhallaFormat = route?.walkingPath?.source === 'valhalla';
-  const points = value.map(pair => {
-    if (!Array.isArray(pair) || pair.length < 2) return null;
-    const lat = Number(valhallaFormat ? pair[0] : pair[1]);
-    const lng = Number(valhallaFormat ? pair[1] : pair[0]);
-    return Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? { lat, lng } : null;
-  }).filter(Boolean);
+function readSegmentCoordinates(segment) {
+  const points = segment.coordinates.map(([lat, lng]) => ({ lat, lng }));
   if (points.length <= 96) return points;
 
   // Reduce dense router output while retaining corners. Uniform index
@@ -107,7 +96,8 @@ function readWalkingCoordinates(route) {
 function projectStops(stops, route = null) {
   const coordinates = stops.map(readCoordinates);
   const hasCoordinates = coordinates.length > 0 && coordinates.every(Boolean);
-  const walkingCoordinates = readWalkingCoordinates(route);
+  const segments = transportSegments(route).map(segment => ({ ...segment, geographicPoints: readSegmentCoordinates(segment) }));
+  const walkingCoordinates = segments.flatMap(segment => segment.geographicPoints);
   const hasWalkingPath = walkingCoordinates.length > 1;
   let points;
   let walkingPoints;
@@ -120,7 +110,8 @@ function projectStops(stops, route = null) {
       return new THREE.Vector3(longitudeDelta * latitudeScale, 0, origin.lat - lat);
     };
     points = coordinates.map(project);
-    walkingPoints = hasWalkingPath ? walkingCoordinates.map(project) : [];
+    segments.forEach(segment => { segment.points = segment.geographicPoints.map(project); });
+    walkingPoints = segments.flatMap(segment => segment.points);
   } else {
     points = stops.map((_, index) => new THREE.Vector3(index * 23, 0, Math.sin(index * 1.2) * 23));
     walkingPoints = [];
@@ -138,6 +129,7 @@ function projectStops(stops, route = null) {
     walkingPoints: walkingPoints.length > 1 ? walkingPoints : points,
     hasCoordinates,
     hasWalkingPath,
+    segments,
     width: Math.max(102, size.x * scale + 44),
     depth: Math.max(88, size.z * scale + 44)
   };
@@ -534,12 +526,19 @@ export function createRouteScene(container, { onSelect, onReady, onError } = {})
     }
   }
 
-  function addRoad(points, pathPoints = points) {
+  function addRoad(points, segments) {
     const streetMaterial = new THREE.MeshStandardMaterial({ color: COLORS.street, roughness: 1 });
     const pavementMaterial = new THREE.MeshStandardMaterial({ color: COLORS.pavement, roughness: 1 });
-    const lineMaterial = new THREE.MeshStandardMaterial({ color: COLORS.route, roughness: 0.5 });
-    const distinctPoints = pathPoints.filter((point, index) => index === 0 || point.distanceTo(pathPoints[index - 1]) > 0.05);
-    distinctPoints.forEach((point, index) => {
+    let hasRoadMeshes = false;
+    routeCurve = new THREE.CurvePath();
+    routeLength = 0;
+    traveler = null;
+    walkDistance = 0;
+    for (const segment of segments) {
+    const lineMaterial = new THREE.MeshStandardMaterial({ color: segment.color, roughness: 0.5 });
+    const distinctPoints = (segment.points || []).filter((point, index) => index === 0 || point.distanceTo(segment.points[index - 1]) > 0.05);
+    if (!segment.illustrative) distinctPoints.forEach((point, index) => {
+      hasRoadMeshes = true;
       const joint = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.14, 20), streetMaterial);
       joint.position.set(point.x, 0.22, point.z);
       joint.receiveShadow = true;
@@ -557,20 +556,27 @@ export function createRouteScene(container, { onSelect, onReady, onError } = {})
       street.castShadow = false;
     });
 
-    routeCurve = null;
-    routeLength = 0;
-    traveler = null;
-    walkDistance = 0;
-    if (distinctPoints.length < 2) return;
-    routeCurve = new THREE.CurvePath();
+    if (distinctPoints.length < 2) { lineMaterial.dispose(); continue; }
+    const segmentCurve = new THREE.CurvePath();
     distinctPoints.slice(1).forEach((point, index) => {
       const start = distinctPoints[index].clone().setY(0.46);
       const end = point.clone().setY(0.46);
+      segmentCurve.add(new THREE.LineCurve3(start, end));
       routeCurve.add(new THREE.LineCurve3(start, end));
     });
+    if (segment.illustrative) {
+      const geometry = new THREE.BufferGeometry().setFromPoints(distinctPoints.map(p => p.clone().setY(0.46)));
+      const line = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: segment.color, dashSize: 1.3, gapSize: .9 }));
+      line.computeLineDistances();
+      routeGroup.add(line);
+      lineMaterial.dispose();
+    } else {
+      routeGroup.add(new THREE.Mesh(new THREE.TubeGeometry(segmentCurve, Math.max(32, distinctPoints.length * 8), .3, 8, false), lineMaterial));
+    }
+    }
+    if (!hasRoadMeshes) { streetMaterial.dispose(); pavementMaterial.dispose(); }
     routeLength = routeCurve.getLength();
-    const line = new THREE.Mesh(new THREE.TubeGeometry(routeCurve, Math.max(64, distinctPoints.length * 16), 0.3, 8, false), lineMaterial);
-    routeGroup.add(line);
+    if (!routeLength) { routeCurve = null; return; }
     traveler = new THREE.Group();
     const core = new THREE.Mesh(new THREE.SphereGeometry(0.9, 16, 12), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x7df1ed, emissiveIntensity: 0.7 }));
     const halo = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.6, 32), new THREE.MeshBasicMaterial({ color: COLORS.route, transparent: true, opacity: 0.75, side: THREE.DoubleSide }));
@@ -650,7 +656,7 @@ export function createRouteScene(container, { onSelect, onReady, onError } = {})
       ...(stops || []).map(stop => `${stop?.name || ''}:${stop?.type || ''}`)
     ].join('|'));
     addContext(routePoints, projection.width, projection.depth, stops, sceneSeed, walkingRoutePoints);
-    addRoad(routePoints, walkingRoutePoints);
+    addRoad(routePoints, projection.segments || []);
     addStops(stops, routePoints);
     renderedRoute = route;
     setActiveStop(nextActiveIndex);
@@ -782,3 +788,4 @@ export function createRouteScene(container, { onSelect, onReady, onError } = {})
 
   return { available: true, setRoute, setActiveStop, setVisible, resetCamera, dispose };
 }
+

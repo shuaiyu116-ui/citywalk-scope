@@ -3,66 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f4f7f6">
-  <title>先行 Citywalk Scope · 城市试走</title>
+  <meta name="theme-color" content="#f3f5f3">
+  <title>探索城市 · 先行 Citywalk Scope</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/library.css">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/workspace.css">
   <script type="importmap">{"imports":{"three":"/vendor/three/three.module.js"}}</script>
 </head>
-<body>
+<body class="app-shell">
+  <a class="skip-link" href="#workspaceNav">跳到功能导航</a>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="先行首页"><span class="brand-icon"><i data-lucide="footprints"></i></span><h1>先行 <span>Citywalk Scope</span></h1></a>
-    <div class="topbar-right"><span class="team-name">立大功汪汪队</span><span class="connection-state"><span class="status-dot"></span><span id="dataStatus" role="status">演示模式</span></span><button class="icon-btn" id="settingsButton" aria-label="连接设置" title="连接设置"><i data-lucide="settings-2"></i></button></div>
+    <a class="brand" href="#explore" data-workspace-link="explore" aria-label="先行首页"><span class="brand-icon"><i data-lucide="footprints"></i></span><h1>先行 <span>Citywalk Scope</span></h1></a>
+    <div class="topbar-right"><span class="team-name">立大功汪汪队</span><span class="connection-state"><span class="status-dot"></span><span id="dataStatus" role="status">正在读取连接状态</span></span><button class="icon-btn" id="settingsButton" aria-label="打开偏好设置" title="偏好设置"><i data-lucide="settings-2"></i></button></div>
   </header>
-  <main class="workspace">
-    <aside class="planner">
-      <div class="eyebrow">A WALK OF YOUR OWN</div>
-      <h2>今天，想怎么走？</h2>
-      <form id="routeForm">
-        <label class="field-label" for="promptInput">你的城市漫步</label>
-        <textarea id="promptInput" maxlength="500" rows="5" placeholder="上海的下午，想看梧桐、老洋房，逛几家有生活感的小店。大约两小时，走慢一点。">上海的下午，想看梧桐、老洋房，逛几家有生活感的小店。大约两小时，走慢一点。</textarea>
-        <button class="primary-btn" id="generateButton" type="submit"><i data-lucide="sparkles"></i><span>生成我的路线</span><i data-lucide="arrow-up-right"></i></button>
-      </form>
-      <div class="example-prompts" aria-label="路线示例">
-        <span>试试这些：</span>
-        <button type="button" class="prompt-chip" data-prompt="北京的下午，想走胡同、看城市地标，慢慢逛两个小时。">北京 · 胡同人文</button>
-        <button type="button" class="prompt-chip" data-prompt="上海的下午，想看梧桐、老洋房，逛几家有生活感的小店。">上海 · 梧桐街区</button>
-        <button type="button" class="prompt-chip" data-prompt="南京的下午，想走夫子庙、老门东和秦淮河边。">南京 · 秦淮旧城</button>
+  <aside class="workspace-sidebar" aria-label="工作空间">
+    <div class="sidebar-intro"><span class="eyebrow">你的城市漫游</span><p>走进城市，也走进生活。</p></div>
+    <nav id="workspaceNav" class="workspace-nav" aria-label="功能导航" tabindex="-1">
+      <a href="#explore" data-workspace-link="explore" aria-current="page"><i data-lucide="messages-square"></i><span>探索城市</span></a>
+      <a href="#itinerary" data-workspace-link="itinerary"><i data-lucide="list-todo"></i><span>行程编辑</span></a>
+      <a href="#roadbook" data-workspace-link="roadbook"><i data-lucide="book-open"></i><span>图文路书</span></a>
+      <a href="#discover" data-workspace-link="discover"><i data-lucide="compass"></i><span>导航发现</span></a>
+      <a href="#library" data-workspace-link="library"><i data-lucide="bookmark"></i><span>行程收藏</span></a>
+      <a href="#settings" data-workspace-link="settings"><i data-lucide="sliders-horizontal"></i><span>偏好设置</span></a>
+    </nav>
+    <div class="sidebar-note"><i data-lucide="map-pinned"></i><strong>下一站，随你喜欢</strong><p>把想法交给 DS，<br>把时间留给沿途。</p></div>
+  </aside>
+  <main class="workspace-main" id="workspaceMain">
+    <div class="workspace-notices"><p id="workspaceStatus" class="workspace-status" role="status" aria-atomic="true" hidden></p><a href="#explore" id="reviewShortcut" class="review-shortcut" data-panel="agentReview" hidden>新方案已准备好，查看并确认 <span aria-hidden="true">→</span></a></div>
+    <section class="workspace-view explore-view" data-workspace-view="explore" aria-labelledby="exploreTitle">
+      <div class="view-heading"><div><span class="eyebrow">从一个想法出发</span><h2 id="exploreTitle" data-view-title tabindex="-1">探索城市</h2><p>与 DS 聊聊想去的地方，在地图上展开你的旅行。</p></div><a class="secondary-btn" href="#roadbook" data-workspace-link="roadbook">查看图文路书 <i data-lucide="arrow-up-right"></i></a></div>
+      <div class="workspace explore-layout explore-workspace">
+        <aside class="planner chat-panel chat-pane" aria-label="与 DS 对话">
+          <div class="chat-heading"><span class="chat-avatar" aria-hidden="true"><i data-lucide="sparkles"></i></span><div><h3>与 DS 一起规划</h3><p>城市、兴趣、节奏，都可以慢慢聊。</p></div></div>
+          <section id="conversationPanel" class="conversation-panel" aria-label="行程规划对话"></section>
+          <form id="routeForm" novalidate>
+            <label class="field-label" for="promptInput">告诉 DS 你的想法</label>
+            <textarea id="promptInput" maxlength="500" rows="4" placeholder="例如：去北京玩 6 天，想看历史建筑，安排轻松一些。"></textarea>
+            <div class="composer-footer"><a href="#settings" data-panel="tripOptions">补充出行条件</a><span>Enter 发送 · Shift+Enter 换行</span></div>
+            <button class="primary-btn" id="generateButton" type="submit"><i data-lucide="sparkles"></i><span>开始规划</span><i data-lucide="arrow-up-right"></i></button>
+          </form>
+          <div class="planner-status" id="generationStatus" role="status">正在载入示例行程…</div>
+          <div class="agent-controls"><button type="button" id="cancelGeneration" hidden>取消规划</button><button type="button" id="retryGeneration" hidden>重试上次规划</button><button type="button" id="configureGeneration" hidden>设置 AI Key</button></div>
+          <section id="agentReview" class="place-evidence agent-review" aria-label="新行程方案" hidden></section>
+          <details class="demo-picker"><summary>先体验一条城市漫游</summary><div class="example-prompts" aria-label="路线示例">
+            <button type="button" class="prompt-chip" data-prompt="北京的下午，想走胡同、看城市地标，慢慢逛两个小时。">北京 · 胡同人文</button>
+            <button type="button" class="prompt-chip" data-prompt="上海的下午，想看梧桐、老洋房，逛几家有生活感的小店。">上海 · 梧桐街区</button>
+            <button type="button" class="prompt-chip" data-prompt="南京的下午，想走夫子庙、老门东和秦淮河边。">南京 · 秦淮旧城</button>
+          </div></details>
+        </aside>
+        <section class="route-section map-panel map-pane" aria-label="路线空间预览">
+          <div class="route-heading"><div><div class="route-kicker"><span id="routeCity">上海</span><span id="routeSource">示例路线</span></div><h2 id="routeTitle" tabindex="-1">正在展开这座城市</h2><p id="routeSummary"></p><div id="workflowTrail" class="workflow-trail" hidden></div></div></div>
+          <div id="dayNavigation" class="place-evidence day-navigation" aria-label="按日预览"></div>
+          <div class="map-toolbar"><span class="mood" id="routeMood"></span><div class="map-actions"><button class="icon-btn" id="resetView" title="复位视角" aria-label="复位视角"><i data-lucide="locate-fixed"></i></button><div class="view-toggle" role="group" aria-label="地图视图"><button class="active" data-view="2d" aria-pressed="true"><i data-lucide="map"></i>2D</button><button data-view="3d" aria-pressed="false"><i data-lucide="box"></i>3D</button></div></div></div>
+          <div class="spatial-stage"><div id="mapCanvas" class="map-canvas" role="region" aria-label="二维路线地图"></div><div id="scene3d" class="scene-3d" role="region" aria-label="三维路线空间示意" hidden></div><div class="scene-loading" id="sceneLoading" hidden>正在展开三维场景…</div><div class="stage-badge" id="mapMode">地图正在加载</div></div>
+          <div class="map-footer"><span id="routePathLabel"><span class="legend-dot"></span>点位示意 · 非导航路线</span><span id="coordinateStatus">示例坐标</span></div>
+          <div class="active-stop-strip"><span class="stop-number" id="activeNumber">01</span><div><strong id="activeName"></strong><p id="activeNote"></p></div><span class="active-time" id="activeTime"></span><a href="#roadbook" data-workspace-link="roadbook" class="active-stop-link" aria-label="在图文路书查看地点">查看路书 <i data-lucide="arrow-up-right"></i></a></div>
+        </section>
       </div>
-      <div class="planner-status" id="generationStatus" role="status">当前为上海示例路线</div>
-      <div class="route-stats"><div><i data-lucide="route"></i><strong id="routeDistance">--</strong><span>预计步行</span></div><div><i data-lucide="clock-3"></i><strong id="routeDuration">--</strong><span>含停留时间</span></div></div>
-      <div class="itinerary-head"><h3>沿途停靠</h3><span id="stopsSummary">--</span></div>
-      <ol class="stop-list" id="stopList"></ol>
-      <div class="planner-footer"><button class="secondary-btn" id="syncButton"><i data-lucide="map-pin-house"></i><span>携程 POI</span><i data-lucide="arrow-up-right"></i></button><span id="poiConnection">数据适配入口</span></div>
-    </aside>
-    <section class="route-section" aria-label="路线空间预览">
-      <div class="route-heading"><div><div class="route-kicker"><span id="routeCity">上海</span><span id="routeSource">示例路线</span></div><h2 id="routeTitle">正在展开这座城市</h2><p id="routeSummary"></p><div id="workflowTrail" class="workflow-trail" aria-live="polite"></div></div><button class="icon-btn" id="exportButton" title="导出路线 JSON" aria-label="导出路线 JSON"><i data-lucide="download"></i></button></div>
-      <div class="map-toolbar"><span class="mood" id="routeMood"></span><div class="map-actions"><button class="icon-btn" id="resetView" title="复位视角" aria-label="复位视角"><i data-lucide="locate-fixed"></i></button><div class="view-toggle" role="group" aria-label="地图视图"><button class="active" data-view="2d" aria-pressed="true"><i data-lucide="map"></i>2D</button><button data-view="3d" aria-pressed="false"><i data-lucide="box"></i>3D</button></div></div></div>
-      <div class="spatial-stage"><div id="mapCanvas" class="map-canvas" role="region" aria-label="二维路线地图"></div><div id="scene3d" class="scene-3d" role="region" aria-label="三维路线空间示意" hidden></div><div class="scene-loading" id="sceneLoading" hidden>正在展开三维场景…</div><div class="stage-badge" id="mapMode">地图正在加载</div></div>
-      <div class="map-footer"><span id="routePathLabel"><span class="legend-dot"></span>点位示意 · 非导航路线</span><span id="coordinateStatus">示例坐标</span></div>
-      <div class="active-stop-strip"><span class="stop-number" id="activeNumber">01</span><div><strong id="activeName"></strong><p id="activeNote"></p></div><span class="active-time" id="activeTime"></span></div>
     </section>
-    <section class="story-section" aria-label="沉浸式试走">
-      <div class="story-heading"><div><span class="eyebrow">TAKE A LITTLE WALK</span><h2>把下一站，变成眼前。</h2></div><div class="story-controls"><span id="walkCounter">01 / 04</span><button class="icon-btn" id="prevStop" title="上一站" aria-label="上一站"><i data-lucide="arrow-left"></i></button><button class="icon-btn play-btn" id="playWalk" title="自动试走" aria-label="自动试走"><i data-lucide="play"></i></button><button class="icon-btn" id="nextStop" title="下一站" aria-label="下一站"><i data-lucide="arrow-right"></i></button></div></div>
-      <div class="storyboard" id="storyboard" tabindex="0" aria-label="路线场景卡片"></div>
-      <div class="walk-progress"><div class="progress-line"><span></span></div><div class="progress-labels"><span id="startTime"></span><span id="endTime"></span></div></div>
+    <section class="workspace-view" data-workspace-view="itinerary" aria-labelledby="itineraryTitle" hidden>
+      <div class="view-heading"><div><span class="eyebrow">让每一天刚刚好</span><h2 id="itineraryTitle" data-view-title tabindex="-1">行程编辑</h2><p>调整地点、日期与交通，计算并提交后同步到地图和路书。</p></div><a class="secondary-btn" href="#explore" data-workspace-link="explore">回到地图 <i data-lucide="arrow-up-right"></i></a></div>
+      <div class="itinerary-layout view-content"><aside class="workspace-card itinerary-overview"><h3 data-current-route-title>当前行程</h3><div class="route-stats"><div><i data-lucide="route"></i><strong id="routeDistance">--</strong><span>交通距离（全部方式）</span></div><div><i data-lucide="clock-3"></i><strong id="routeDuration">--</strong><span>含停留时间</span></div></div><details class="current-conditions"><summary>当前行程的出行条件</summary><div class="trip-context-summary" id="tripContextSummary"></div></details><div class="itinerary-head"><h3>沿途停靠</h3><span id="stopsSummary">--</span></div><ol class="stop-list" id="stopList"></ol></aside><details id="itineraryEditor" class="place-evidence itinerary-editor workspace-card" open></details></div>
     </section>
-  </main>
-  <footer class="page-footer"><span>先行 Citywalk Scope</span><span>立大功汪汪队 · 携程黑客松 · 自由探索</span></footer>
-  <div class="toast" id="toast" role="status"></div>
-  <dialog id="settingsDialog" class="settings-dialog"><div class="dialog-heading"><div><span class="eyebrow">CONNECTIONS</span><h2>连接设置</h2></div><button class="icon-btn" id="closeSettings" aria-label="关闭设置" title="关闭"><i data-lucide="x"></i></button></div>
-    <p class="dialog-intro">填入自己的 DeepSeek Key，生成你想走的路线。</p>
+    <section class="workspace-view" data-workspace-view="roadbook" aria-labelledby="roadbookPageTitle" hidden>
+      <div class="view-heading"><div><span class="eyebrow">沿途都有故事</span><h2 id="roadbookPageTitle" data-view-title tabindex="-1">图文路书</h2><p>按天看看去哪里、怎么逛，把喜欢的安排收藏或带走。</p></div><div class="view-actions"><button class="secondary-btn" id="libraryButton" type="button"><i data-lucide="bookmark"></i>收藏行程</button><button class="secondary-btn" id="shareButton" type="button"><i data-lucide="share-2"></i>分享</button><button class="primary-btn" id="roadbookButton" type="button"><i data-lucide="download"></i>下载与打印</button><button class="icon-btn" id="exportButton" title="导出路线 JSON" aria-label="导出路线 JSON" hidden><i data-lucide="download"></i></button></div></div>
+      <div id="roadbookDayNavigation" class="place-evidence day-navigation" aria-label="路书日期"></div>
+      <section class="travel-plan workspace-card" aria-labelledby="travelPlanTitle"><div class="travel-plan-heading"><div><span class="eyebrow">我的旅行</span><h3 id="travelPlanTitle" data-current-route-title>我的旅行路书</h3></div><div class="story-controls"><span id="walkCounter">01 / 04</span><button class="icon-btn" id="prevStop" title="上一站" aria-label="上一站"><i data-lucide="arrow-left"></i></button><button class="icon-btn play-btn" id="playWalk" title="自动试走" aria-label="自动试走"><i data-lucide="play"></i></button><button class="icon-btn" id="nextStop" title="下一站" aria-label="下一站"><i data-lucide="arrow-right"></i></button></div></div><div id="scheduleDetails" tabindex="0" aria-label="分日图文旅行路书"></div><div class="walk-progress"><div class="progress-line"><span></span></div><div class="progress-labels"><span id="startTime"></span><span id="endTime"></span></div></div></section>
+    </section>
+    <section class="workspace-view" data-workspace-view="discover" aria-labelledby="discoverTitle" hidden>
+      <div class="view-heading"><div><span class="eyebrow">出发后，也有新发现</span><h2 id="discoverTitle" data-view-title tabindex="-1">导航发现</h2><p>前往下一站，记录已经走过的地方，发现附近的旅行灵感。</p></div><button class="secondary-btn" id="syncButton" type="button"><i data-lucide="map-pin-house"></i>查看携程地点</button><button type="button" id="quickPoi" hidden>查看携程地点</button><span id="poiConnection" hidden></span></div>
+      <details id="navigationDetails" class="place-evidence navigation-details workspace-card" open></details>
+    </section>
+    <section class="workspace-view" data-workspace-view="library" aria-labelledby="libraryTitle" hidden>
+      <div class="view-heading"><div><span class="eyebrow">留住每一段旅行</span><h2 id="libraryTitle" data-view-title tabindex="-1">行程收藏</h2><p>保存当前行程，回看历史版本，或重新打开一段旅行。</p></div><a class="secondary-btn" href="/library.html" target="_blank" rel="noopener">独立离线行程库 <i data-lucide="external-link"></i></a></div>
+      <section id="libraryDialog" class="workspace-card library-surface" aria-label="本机收藏与历史"><p id="offlineStatus" role="status"></p><div id="libraryRoot"></div></section>
+    </section>
+    <section class="workspace-view" data-workspace-view="settings" aria-labelledby="settingsTitle" hidden>
+      <div class="view-heading"><div><span class="eyebrow">旅行，按你的方式</span><h2 id="settingsTitle" data-view-title tabindex="-1">偏好设置</h2><p>连接 DS，补充出行条件，让接下来的规划更懂你。</p></div><a class="secondary-btn" href="#explore" data-workspace-link="explore">继续对话 <i data-lucide="arrow-up-right"></i></a></div>
+      <div class="settings-grid view-content">
+  <section id="settingsDialog" class="workspace-card settings-card settings-surface"><div class="dialog-heading"><div><h3>AI 与数据连接</h3></div><button class="icon-btn" id="closeSettings" aria-label="返回探索" title="返回探索"><i data-lucide="arrow-up-right"></i></button></div>
+    <p class="dialog-intro" id="aiSetupHint">填入自己的 DeepSeek Key，即可规划示例以外的行程。</p>
     <form id="settingsForm">
       <label class="field-label" for="deepseekKey">DeepSeek API Key <span>可选</span></label><div class="key-input"><input id="deepseekKey" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false"><button type="button" class="icon-btn" id="toggleKey" aria-label="显示 Key" title="显示 Key"><i data-lucide="eye"></i></button></div>
       <p class="privacy-note">Key 仅保留在当前标签页会话中，经本机服务转发至 DeepSeek，不写入项目文件。</p>
-      <div class="connection-row"><i data-lucide="map-pin-house"></i><div><strong>携程 POI</strong><p id="ctripConfigStatus">服务端适配入口 · 未配置时使用演示 POI</p></div><span class="small-badge">预留</span></div>
+      <div class="connection-row"><i data-lucide="map-pin-house"></i><div><strong>携程地点</strong><p id="ctripConfigStatus">提供景点位置与来源信息</p></div><span class="small-badge">地点查询</span></div>
       <div class="dialog-actions"><button type="button" class="secondary-btn" id="clearKey">清除 Key</button><button type="button" class="primary-btn" id="saveSettings">保存设置<i data-lucide="check"></i></button></div>
     </form>
+  </section>
+
+        <section class="workspace-card trip-settings"><h3>本次出行条件</h3>
+        <details class="trip-options" id="tripOptions" open>
+          <summary>补充出行条件 <span>选填</span></summary>
+          <p class="trip-help">也可以直接在对话中告诉我。这些选项用于补充日期、交通和同行需求。</p>
+          <fieldset id="tripFields">
+            <legend class="sr-only">本次出行条件</legend>
+            <div class="trip-grid">
+              <label for="tripStartDate">出行日期<input form="routeForm" id="tripStartDate" type="date" min="2000-01-01" max="2099-12-31"></label>
+              <label for="tripDayCount">天数<input form="routeForm" id="tripDayCount" type="number" min="1" max="14" step="1" placeholder="默认 1 天"></label>
+              <label for="tripDailyStart">每天开始<input form="routeForm" id="tripDailyStart" type="time"></label>
+              <label for="tripDailyEnd">每天结束<input form="routeForm" id="tripDailyEnd" type="time" aria-describedby="tripTimeHint"></label>
+              <label class="trip-wide" for="tripTransport">交通偏好<select form="routeForm" id="tripTransport"><option value="">未指定（默认步行）</option value="walking">步行</option><option value="cycling">骑行</option><option value="transit">公共交通</option><option value="driving">自驾</option><option value="taxi">打车</option><option value="mixed">混合出行</option></select></label>
+              <label class="trip-wide" for="tripMaxWalk">每天最多步行（km）<input form="routeForm" id="tripMaxWalk" type="number" min="0" max="50" step="0.1" placeholder="未指定，0 表示不步行"></label>
+            </div>
+            <p class="trip-help" id="tripTimeHint">时段按每天重复；结束早于开始表示次日，起止不可相同。时刻为计划推算。</p>
+            <fieldset class="companion-fields"><legend>同行条件（可多选）</legend>
+              <label><input form="routeForm" type="checkbox" name="tripCompanion" value="none">无特殊条件</label><label><input form="routeForm" type="checkbox" name="tripCompanion" value="children">带儿童</label><label><input form="routeForm" type="checkbox" name="tripCompanion" value="seniors">有老人</label><label><input form="routeForm" type="checkbox" name="tripCompanion" value="wheelchair">轮椅通行</label><label><input form="routeForm" type="checkbox" name="tripCompanion" value="stroller">带婴儿车</label>
+            </fieldset>
+            <button class="trip-reset" id="resetTripConditions" type="button">清空出行条件</button>
+          </fieldset>
+        </details>
+        </section>
+        <section class="workspace-card preferences-card"><h3>我的游玩偏好</h3><div id="preferencesRoot" class="preference-settings"></div></section>
+      </div>
+    </section>
+    <div class="storyboard" id="storyboard" hidden aria-hidden="true"></div>
+    <footer class="page-footer"><span>先行 Citywalk Scope</span><span>立大功汪汪队 · 携程黑客松 · 自由探索</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="poiDialog" class="poi-dialog" aria-label="携程地点"><div class="dialog-heading"><div><span class="eyebrow">POINTS OF INTEREST</span><h2>携程地点</h2></div><button class="icon-btn" id="closePoi" aria-label="关闭地点列表" title="关闭"><i data-lucide="x"></i></button></div><p id="poiStatus" class="dialog-intro" role="status"></p><div class="agent-controls"><button id="cancelPoi" type="button" hidden>取消地点查询</button><button id="retryPoi" type="button" hidden>重试地点查询</button></div><div id="poiList" class="poi-list"></div></dialog>
+<dialog id="roadbookDialog" class="roadbook-dialog" aria-labelledby="roadbookTitle">
+    <div class="dialog-heading"><h2 id="roadbookTitle">离线路书与打印</h2><button type="button" id="closeRoadbook" class="secondary-btn">关闭路书</button></div>
+    <p>把当前行程保存为可离线阅读的路书。日期、同行、住宿备注和预订等行程内容会包含在内，下载前请先预览。</p>
+    <div class="roadbook-actions"><button type="button" id="roadbookCurrent">使用当前已提交行程</button><label>导入 JSON 只读预览<input type="file" id="importRoadbookJson" accept=".json,application/json"></label></div>
+    <p id="roadbookStatus" role="status" aria-live="polite"></p>
+    <div class="roadbook-actions"><button type="button" id="downloadRoadbook" disabled>下载完整 HTML</button><button type="button" id="printRoadbook" disabled>打印 / 保存为 PDF</button><button type="button" id="downloadRoadbookJson" disabled>下载此版 JSON</button></div>
+    <p class="privacy-note">下载时会一并保存地点和酒店照片，断网也能阅读图文路书。</p>
+    <iframe id="roadbookPreview" title="路书只读预览" sandbox="allow-same-origin allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
   </dialog>
-  <dialog id="poiDialog" class="poi-dialog"><div class="dialog-heading"><div><span class="eyebrow">POINTS OF INTEREST</span><h2>携程 POI</h2></div><button class="icon-btn" id="closePoi" aria-label="关闭 POI" title="关闭"><i data-lucide="x"></i></button></div><p id="poiStatus" class="dialog-intro"></p><div id="poiList" class="poi-list"></div></dialog>
+  <dialog id="shareDialog" class="roadbook-dialog" aria-labelledby="shareTitle">
+    <div class="dialog-heading"><h2 id="shareTitle">行程分享</h2><button type="button" id="closeShare" class="secondary-btn">返回规划</button></div>
+    <p>分享的是这一刻的行程，后续修改不会自动更新。任何拿到链接的人都能查看；链接无法远程撤回，请勿包含敏感信息。</p>
+    <div id="shareOutgoing" hidden>
+      <p>下方预览含本次日期、同行、住宿备注、预订和已游览记录，请检查是否含个人信息。你的 Key、聊天记录和当前位置不会分享。</p>
+      <label><input id="shareConsent" type="checkbox"> 我已检查下方预览，同意公开这些行程内容</label>
+      <div class="roadbook-actions"><label>约定有效期<select id="shareExpiry"><option value="0">不自动过期</option><option value="7">7 天</option><option value="30">30 天</option></select></label><button id="generateShare" type="button">生成此版分享链接</button><button id="copyShareLink" type="button" disabled>复制完整链接</button></div>
+      <label for="shareLink">完整链接（剪贴板不可用时可手动复制）</label><textarea id="shareLink" readonly spellcheck="false"></textarea>
+      <p>聊天软件可能截断长链接；过长时改用路书中的 JSON / HTML 文件。网站停止服务时，链接页面也无法打开，请另存路书。</p>
+    </div>
+    <div id="shareIncoming" hidden>
+      <p>复制后保留路线和日期安排，并重新核对地点。原作者的同行、住宿、预订和个人备注不会复制。此操作需要联网，无需 AI Key。</p>
+      <div class="roadbook-actions"><button id="rebuildShared" type="button" disabled>复制为我的行程（重新核对）</button><button id="cancelShareCopy" type="button" hidden>取消核对</button><button id="acceptShared" type="button" hidden>接受交通未知并采用新副本</button></div>
+    </div>
+    <p id="shareStatus" role="status" aria-live="polite"></p>
+    <div class="roadbook-actions"><button id="shareJson" type="button" disabled>下载分享原版 JSON</button></div>
+    <iframe id="sharePreview" title="分享行程只读预览" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+  </dialog>
   <script src="/vendor/lucide.min.js"></script>
   <script src="/vendor/leaflet/leaflet.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>
+
+
+
+

@@ -1,0 +1,628 @@
+/* Application views. Standalone share and offline-library pages use their own shell. */
+.app-shell {
+  --paper: #f4f6f5;
+  --white: #fff;
+  --ink: #213b30;
+  --muted: #6b7b72;
+  --line: #dfe6e1;
+  --green: #237956;
+  --light-green: #eaf3ed;
+  --surface-soft: #f7f9f7;
+  --shell-top: 72px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  display: grid;
+  grid-template-columns: 188px minmax(0, 1fr);
+  grid-template-rows: var(--shell-top) minmax(0, 1fr);
+  min-height: 100dvh;
+  align-items: start;
+}
+.app-shell :where(button, input, textarea, select) { font-family: inherit; }
+.app-shell :where(button, a, input, textarea, select, summary) { touch-action: manipulation; }
+.app-shell :where(button, a) { -webkit-tap-highlight-color: transparent; }
+.app-shell :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid #459b73; outline-offset: 3px; }
+.app-shell :where(p, h2, h3, h4, label, small) { overflow-wrap: anywhere; }
+.app-shell :where(input, select, textarea) { accent-color: var(--green); }
+.app-shell :where(input:not([type=checkbox]):not([type=radio]):not([type=file]), select) { min-height: 42px; padding: 9px 11px; border: 1px solid #cad7ce; border-radius: 8px; background: white; color: var(--ink); font-size: 14px; line-height: 1.45; }
+.app-shell :where(button, input, select, textarea):disabled { opacity: .5; }
+.app-shell a { text-underline-offset: 4px; }
+.app-shell :where(.primary-btn, .secondary-btn) { min-height: 42px; padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: 600; line-height: 1.4; text-decoration: none; }
+.app-shell .primary-btn { background: var(--green); color: white; }
+.app-shell .primary-btn:hover { background: #1d6548; }
+.app-shell .secondary-btn { background: white; border: 1px solid var(--line); color: var(--ink); }
+.app-shell .secondary-btn:hover { background: var(--light-green); border-color: #b5ccb9; }
+.app-shell .icon-btn { width: 40px; height: 40px; flex-basis: 40px; border-radius: 9px; }
+
+/* Persistent navigation and page frame. */
+.app-shell .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  height: var(--shell-top);
+  padding: 0 28px;
+  gap: 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.app-shell .brand { gap: 10px; }
+.app-shell .brand-icon { width: 36px; height: 36px; border-radius: 10px; }
+.app-shell .brand h1 { font-size: 22px; font-weight: 700; }
+.app-shell .brand h1 span { font-size: 12px; color: var(--muted); margin-left: 7px; }
+.app-shell .topbar-right { gap: 18px; min-width: 0; }
+.app-shell .team-name { font-size: 11px; }
+.app-shell .connection-state { font-size: 12px; gap: 8px; min-width: 0; }
+.app-shell .status-dot { width: 7px; height: 7px; }
+.app-shell .workspace-sidebar {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--shell-top);
+  height: calc(100dvh - var(--shell-top));
+  padding: 22px 0 20px;
+  border-right: 1px solid var(--line);
+  background: white;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.app-shell .sidebar-intro { margin: 0 24px 12px; }
+.app-shell .sidebar-intro .eyebrow { color: #647e6c; font-size: 10px; }
+.app-shell .sidebar-intro p { margin-top: 8px; color: #8a988e; font-size: 10px; line-height: 1.8; }
+.app-shell #workspaceNav {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: auto;
+  padding: 12px 12px;
+  background: #fff;
+  scrollbar-width: thin;
+  border: 0;
+  overflow: visible;
+  flex: 0 0 auto;
+  margin: 0;
+}
+.app-shell #workspaceNav a[data-workspace-link] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: #62766a;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.app-shell #workspaceNav a[data-workspace-link] svg { width: 19px; height: 19px; }
+.app-shell #workspaceNav a[data-workspace-link]:hover { background: var(--surface-soft); color: var(--ink); }
+.app-shell #workspaceNav a[data-workspace-link][aria-current=page] { border-color: #deebe1; background: var(--light-green); color: var(--green); font-weight: 650; }
+.app-shell .sidebar-note { margin: auto 24px 0; padding-top: 28px; color: #84958a; font-size: 11px; line-height: 1.9; }
+.app-shell .sidebar-note > svg { display: block; margin-bottom: 12px; width: 24px; height: 24px; color: #82a78d; }
+.app-shell .sidebar-note strong { display: block; color: #63836c; font-size: 11px; font-weight: 500; }
+.app-shell .sidebar-note p { margin-top: 7px; font-size: 10px; }
+.app-shell .workspace-main { min-width: 0; padding: 24px 28px 40px; grid-column: 2; grid-row: 2; min-height: calc(100dvh - var(--shell-top)); }
+.app-shell .workspace-view { max-width: 1440px; margin: 0 auto; min-width: 0; scroll-margin-top: 90px; }
+.app-shell .workspace-notices { max-width: 1440px; margin: 0 auto; }
+.app-shell .workspace-status { max-width: 1440px; margin: 0 auto 18px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: #eef3ef; color: #587061; font-size: 12px; line-height: 1.75; }
+.app-shell #reviewShortcut { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1440px; margin: 0 auto 18px; padding: 13px 16px; border: 1px solid #b7d3c0; border-radius: 9px; background: #eaf5ed; color: var(--green); font-size: 13px; text-decoration: none; }
+.app-shell .view-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin: 3px 0 24px; }
+.app-shell .view-heading > div { min-width: 0; }
+.app-shell .view-heading .eyebrow { display: block; color: #7e9284; font-size: 10px; margin-bottom: 6px; }
+.app-shell .view-heading h2 { font-size: 26px; line-height: 1.4; font-weight: 650; }
+.app-shell .view-heading p { max-width: 680px; margin-top: 7px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.app-shell .view-content { min-width: 0; }
+.app-shell .workspace-card { min-width: 0; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.app-shell .view-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.app-shell .view-actions a { display: inline-flex; align-items: center; gap: 7px; }
+.app-shell .page-footer { margin: 34px 0 0; padding: 18px 0 0; font-size: 11px; background: transparent; border-color: #e3e9e4; }
+.app-shell .explore-view > .view-heading h2 { font-size: 24px; }
+.app-shell .explore-view > .view-heading p { font-size: 13px; }
+
+/* Explore: conversation and map. */
+.app-shell .workspace.explore-workspace { display: grid; grid-template-columns: minmax(320px, 370px) minmax(0, 1fr); gap: 24px; max-width: none; margin: 0; padding: 0; align-items: start; }
+.app-shell .chat-panel {
+  position: sticky;
+  top: calc(var(--shell-top) + 20px);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-height: calc(100dvh - var(--shell-top) - 40px);
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.app-shell .chat-heading { display: flex; align-items: center; justify-content: flex-start; gap: 11px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.app-shell .chat-heading > .chat-avatar { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; padding: 0; border-radius: 10px; background: #e6f2e9; color: var(--green); }
+.app-shell .chat-heading h3 { margin: 0; font-size: 17px; font-weight: 650; }
+.app-shell .chat-heading p { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.8; }
+.app-shell .conversation-panel { margin: 16px 0 0; font-size: 14px; }
+.app-shell .conversation-controls { gap: 6px; }
+.app-shell .conversation-controls button { padding: 7px 10px; min-height: 36px; border: 1px solid var(--line); border-radius: 7px; margin: 0; color: var(--muted); background: #fff; font-size: 12px; }
+.app-shell .conversation-controls button[aria-pressed=true] { background: var(--light-green); border-color: #c7dbcd; color: var(--green); }
+.app-shell .conversation-mode { margin: 9px 0 16px; font-size: 11px; color: var(--muted); }
+.app-shell .conversation-messages { gap: 14px; max-height: min(42dvh, 450px); min-height: 140px; padding: 0 4px 10px 0; overscroll-behavior: contain; }
+.app-shell .conversation-message { max-width: 96%; padding: 12px 14px; font-size: 14px; line-height: 1.85; border-radius: 12px; }
+.app-shell .conversation-message-assistant { border: 1px solid #e4ebe6; background: #f7faf7; border-bottom-left-radius: 4px; }
+.app-shell .conversation-message-user { background: #e8f2eb; border-bottom-right-radius: 4px; }
+.app-shell .conversation-speaker { margin-bottom: 5px; font-size: 11px; }
+.app-shell #routeForm { display: flex; flex-direction: column; gap: 0; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
+.app-shell #routeForm .field-label { margin: 0 0 8px; font-size: 12px; color: #596d60; }
+.app-shell #promptInput { height: 132px; min-height: 110px; max-height: 300px; padding: 13px 14px; border: 1px solid #cbdad0; border-radius: 10px; background: #fff; font-size: 14px; line-height: 1.85; resize: vertical; }
+.app-shell #promptInput::placeholder { color: #8b978f; }
+.app-shell #promptInput:focus { border-color: #75aa8b; }
+.app-shell .composer-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 10px; color: #94a095; }
+.app-shell .composer-footer a { color: #63876e; text-decoration: none; min-height: 30px; display: inline-flex; align-items: center; }
+.app-shell #generateButton { flex: 0 1 auto; flex-direction: row; width: 100%; height: auto; min-height: 42px; margin: 0; padding: 10px 15px; font-size: 14px; margin-top: 11px; }
+.app-shell #generateButton span { flex: initial; text-align: center; font-size: 14px; }
+.app-shell #generateButton svg:last-child { display: block; width: 16px; }
+.app-shell .example-prompts { gap: 6px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--line); }
+.app-shell .example-prompts > span { width: 100%; margin-bottom: 2px; font-size: 11px; }
+.app-shell .prompt-chip { min-height: 33px; padding: 6px 8px; border-radius: 7px; font-size: 11px; color: #627469; }
+.app-shell .demo-picker { margin-top: 17px; padding-top: 14px; border-top: 1px solid var(--line); }
+.app-shell .demo-picker summary { font-size: 11px; color: var(--muted); cursor: pointer; min-height: 30px; }
+.app-shell .demo-picker .example-prompts { border: 0; margin: 4px 0 0; padding: 0; }
+.app-shell .planner-status { margin: 13px 0 0; font-size: 12px; line-height: 1.8; }
+.app-shell .agent-controls { gap: 6px; margin: 10px 0 0; }
+.app-shell .agent-controls button { min-height: 36px; padding: 7px 10px; border-color: var(--line); border-radius: 7px; font-size: 12px; }
+.app-shell .agent-review { margin: 16px 0 0; padding: 16px; border-color: #bcd7c7; border-radius: 10px; background: #f5faf6; font-size: 13px; }
+.app-shell .agent-review h3 { font-size: 17px; }
+.app-shell .agent-review h4 { font-size: 15px; }
+.app-shell .agent-review p { line-height: 1.8; }
+.app-shell .agent-version { padding: 13px; border-radius: 8px; background: white; }
+.app-shell .agent-trip-summary, .app-shell .agent-day-preview p, .app-shell .agent-accept, .app-shell .agent-caution { font-size: 12px; }
+.app-shell .agent-day-preview { max-height: 240px; }
+.app-shell .agent-version button { width: 100%; min-height: 40px; padding: 9px 12px; border-radius: 7px; font-size: 13px; }
+.app-shell .agent-alternatives { font-size: 12px; }
+.app-shell .agent-review small { font-size: 11px; }
+.app-shell .map-panel { padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: #fff; min-width: 0; }
+.app-shell .route-heading { display: block; min-height: 0; padding: 0; margin-bottom: 20px; }
+.app-shell .route-kicker { font-size: 11px; gap: 9px; }
+.app-shell .route-heading h2 { margin: 9px 0 8px; font-size: 26px; line-height: 1.45; font-weight: 650; }
+.app-shell .route-heading p { max-width: 780px; font-size: 13px; line-height: 1.8; color: var(--muted); }
+.app-shell .day-navigation { margin: 0; padding: 12px 14px; border-color: #e3e9e4; border-radius: 9px; background: var(--surface-soft); gap: 10px 18px; font-size: 12px; }
+.app-shell .day-navigation select { min-width: 105px; min-height: 36px; padding: 6px 8px; font-size: 12px; }
+.app-shell .day-navigation label { gap: 4px; }
+.app-shell .map-toolbar { margin: 16px 0 12px; min-height: 40px; gap: 12px; }
+.app-shell .mood { max-width: none; font-size: 12px; line-height: 1.7; }
+.app-shell .map-actions { gap: 8px; }
+.app-shell .view-toggle { gap: 2px; padding: 3px; background: #eef2ee; border-radius: 8px; }
+.app-shell .view-toggle button { min-height: 34px; padding: 7px 10px; border-radius: 5px; font-size: 12px; min-width: 58px; }
+.app-shell .spatial-stage { height: clamp(360px, 52dvh, 620px); margin: 0; border: 1px solid #dce6de; border-radius: 11px; }
+.app-shell .stage-badge { top: 12px; left: 12px; padding: 7px 9px; border-radius: 6px; font-size: 10px; }
+.app-shell .map-footer { margin: 10px 0 16px; gap: 16px; font-size: 10px; line-height: 1.7; }
+.app-shell .active-stop-strip { gap: 12px; min-height: 66px; padding: 16px 0 0; align-items: flex-start; }
+.app-shell .active-stop-strip strong { font-size: 14px; }
+.app-shell .active-stop-strip p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-top: 5px; font-size: 12px; line-height: 1.8; }
+.app-shell .active-time { padding-top: 2px; font-size: 11px; text-align: right; white-space: nowrap; }
+.app-shell .active-stop-link { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); text-decoration: none; white-space: nowrap; padding-top: 2px; }
+.app-shell .active-stop-link > svg { width: 14px; height: 14px; }
+.app-shell .stop-number { width: 36px; height: 36px; flex-basis: 36px; border-radius: 9px; }
+
+/* Itinerary and the dynamic editor. */
+.app-shell .itinerary-layout { display: grid; grid-template-columns: 288px minmax(0, 1fr); gap: 24px; align-items: start; }
+.app-shell .itinerary-overview { min-width: 0; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.app-shell .itinerary-overview > h3 { margin: 0 0 20px; font-size: 17px; font-weight: 650; }
+.app-shell .itinerary-overview .route-stats { margin: 0; padding: 0 0 20px; border-top: 0; gap: 18px 12px; }
+.app-shell .route-stats > div { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 5px 8px; }
+.app-shell .route-stats strong { font-size: 17px; line-height: 1.5; }
+.app-shell .route-stats span { grid-column: 2; margin: 0; font-size: 10px; line-height: 1.7; }
+.app-shell .current-conditions { margin: 14px 0; font-size: 12px; }
+.app-shell .current-conditions summary { padding: 7px 0; }
+.app-shell .trip-context-summary { margin-top: 4px; font-size: 12px; line-height: 1.9; }
+.app-shell .trip-context-summary strong { font-size: 12px; }
+.app-shell .itinerary-head { display: flex; margin: 20px 0 10px; }
+.app-shell .itinerary-head h3 { font-size: 14px; }
+.app-shell .itinerary-head > span { font-size: 11px; }
+.app-shell .stop-list { display: block; }
+.app-shell .stop-list button { min-height: 46px; padding: 10px 0; gap: 10px; }
+.app-shell .stop-dot { width: 26px; height: 26px; flex-basis: 26px; font-size: 11px; }
+.app-shell .stop-label { font-size: 13px; }
+.app-shell .stop-list time { font-size: 10px; }
+.app-shell .itinerary-editor { margin: 0; padding: 0 24px 24px; border: 1px solid var(--line); border-radius: 12px; background: white; font-size: 13px; line-height: 1.8; }
+.app-shell .itinerary-editor > summary { margin: 0 -24px 16px; padding: 18px 24px; border-bottom: 1px solid var(--line); font-size: 16px; }
+.app-shell .itinerary-editor > p { margin: 10px 0; font-size: 13px; color: var(--muted); }
+.app-shell .itinerary-editor > .editor-status { color: #9b5932; }
+.app-shell .itinerary-editor .editor-actions { gap: 7px; margin: 12px 0; }
+.app-shell .itinerary-editor button { min-height: 36px; padding: 7px 10px; border: 1px solid #d8e2db; border-radius: 7px; background: #f9fbf9; color: #486653; font-size: 12px; line-height: 1.5; }
+.app-shell .itinerary-editor button:hover:not(:disabled) { background: var(--light-green); border-color: #b6cdbd; }
+.app-shell .itinerary-editor > .editor-actions:first-of-type > button:first-child { background: var(--green); color: white; border-color: var(--green); font-weight: 600; }
+.app-shell .itinerary-editor > .editor-actions:first-of-type > button:first-child:disabled { background: #e4ece5; color: #75897b; border-color: #dde6df; opacity: 1; }
+.app-shell .itinerary-editor > button { margin: 4px 6px 4px 0; }
+.app-shell .itinerary-editor label { gap: 8px; margin: 12px 0; font-size: 12px; }
+.app-shell .itinerary-editor :where(input, select) { padding: 8px 10px; min-height: 38px; max-width: 100%; min-width: 0; font-size: 13px; border: 1px solid #cfdad2; border-radius: 7px; }
+.app-shell .edit-stop-list { margin: 16px 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.app-shell .edit-stop { padding: 18px; border: 1px solid #dde7df; border-radius: 10px; background: #fcfdfc; }
+.app-shell .edit-stop > strong { font-size: 15px; color: var(--ink); }
+.app-shell .edit-stop > small { margin: 5px 0 10px; color: var(--muted); font-size: 11px; }
+.app-shell .day-form { gap: 14px 18px; margin: 16px 0; padding: 18px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); }
+.app-shell .day-form :where(h4, p) { margin: 0; }
+.app-shell .day-form h4 { font-size: 14px; }
+.app-shell .day-form p { font-size: 12px; color: var(--muted); }
+.app-shell .day-form label { display: flex; flex-direction: column; align-items: stretch; margin: 0; }
+.app-shell .booking-editor { padding: 10px 13px; margin-top: 14px; border-color: var(--line); background: #f3f7f3; font-size: 12px; }
+.app-shell .booking-editor summary { cursor: pointer; }
+.app-shell .place-search { margin-top: 20px; padding-top: 18px; border-color: var(--line); }
+.app-shell .place-search h4 { margin: 0 0 14px; font-size: 15px; }
+.app-shell .place-search label { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; }
+.app-shell .place-search input { width: 100%; }
+.app-shell .search-candidate { padding: 18px 0; border-color: var(--line); }
+.app-shell .search-candidate p { margin: 7px 0; font-size: 12px; color: var(--muted); }
+.app-shell .search-candidate a { margin-right: 12px; font-size: 12px; color: var(--green); }
+
+/* Daily illustrated roadbook. */
+.app-shell [data-workspace-view=roadbook] { max-width: 1120px; }
+.app-shell [data-workspace-view=roadbook] > .day-navigation { margin: 0 0 18px; background: white; }
+.app-shell .travel-plan { margin: 0; padding: 26px 30px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+.app-shell .travel-plan-heading { gap: 16px; margin-bottom: 14px; }
+.app-shell .travel-plan-heading h3 { font-size: 20px; }
+.app-shell .travel-plan-note { max-width: 760px; font-size: 13px; margin: 8px 0 20px; }
+.app-shell .travel-plan .walk-progress { margin: 14px 0 24px; }
+.app-shell .progress-line, .app-shell .progress-line span { height: 3px; border-radius: 2px; }
+.app-shell .progress-labels { font-size: 11px; }
+.app-shell .story-controls { gap: 7px; }
+.app-shell .story-controls > span { margin-right: 8px; font-size: 12px; }
+.app-shell .travel-day { margin-top: 30px; }
+.app-shell .travel-day:first-child { margin-top: 0; }
+.app-shell .travel-day-heading { margin-bottom: 18px; padding-bottom: 14px; }
+.app-shell .travel-day-heading h4 { font-size: 19px; margin-bottom: 6px; }
+.app-shell .travel-day-heading span { font-size: 12px; }
+.app-shell .travel-stops { gap: 20px; }
+.app-shell .travel-stop { grid-template-columns: minmax(230px, 35%) minmax(0, 1fr); border-color: #e0e7e1; border-radius: 12px; background: #fff; }
+.app-shell .travel-stop.active { border-color: #90b89c; box-shadow: 0 0 0 2px #2379560c; }
+.app-shell .travel-stop-photo { background: #eef2ed; }
+.app-shell .travel-stop-photo img { height: 240px; min-height: 210px; }
+.app-shell .travel-stop-photo > :where(figcaption, a) { font-size: 10px; line-height: 1.7; padding: 7px 12px; }
+.app-shell .travel-photo-placeholder { min-height: 210px; background: #edf3ec; color: #6e8b76; }
+.app-shell .travel-stop-content { padding: 22px 24px; }
+.app-shell .travel-stop-time { font-size: 12px; margin-bottom: 8px; }
+.app-shell .travel-stop-title { font-size: 21px; font-weight: 650; }
+.app-shell .travel-stop-address { font-size: 12px; margin: 6px 0 14px; }
+.app-shell .travel-stop-description { margin: 12px 0; font-size: 14px; line-height: 1.95; color: #526357; }
+.app-shell .travel-stop-opening { margin: 12px 0; padding: 10px 12px; font-size: 12px; line-height: 1.8; background: #f4f7f3; }
+.app-shell .travel-stop-actions { gap: 8px; margin: 15px 0 9px; }
+.app-shell .travel-stop-actions > :where(a, button) { min-height: 36px; border-radius: 7px; padding: 7px 11px; font-size: 12px; }
+.app-shell .travel-stop-source { font-size: 10px; color: #7d8b80; }
+.app-shell .travel-hotels { margin-top: 32px; padding-top: 26px; }
+.app-shell .travel-hotels > h3 { font-size: 20px; }
+.app-shell .travel-hotel-grid { gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); }
+.app-shell .travel-hotel { padding: 18px; border-radius: 10px; }
+.app-shell .travel-hotel > img { height: 180px; border-radius: 7px; margin-bottom: 16px; }
+.app-shell .travel-hotel h4 { font-size: 17px; }
+.app-shell .travel-hotel p { font-size: 13px; line-height: 1.85; }
+
+/* Navigation and nearby discovery. */
+.app-shell [data-workspace-view=discover] { max-width: 1120px; }
+.app-shell .navigation-details { padding: 0 26px 26px; margin: 0; border-color: var(--line); border-radius: 12px; background: #fff; font-size: 13px; }
+.app-shell .navigation-details > summary { margin: 0 -26px 18px; padding: 19px 26px; border-bottom: 1px solid var(--line); font-size: 16px; }
+.app-shell .navigation-details > p { margin: 14px 0; line-height: 1.9; color: var(--muted); font-size: 12px; }
+.app-shell .navigation-details button, .app-shell .navigation-details a { display: inline-flex; justify-content: center; align-items: center; gap: 6px; min-height: 38px; padding: 8px 12px; border: 1px solid #d5e0d8; border-radius: 7px; background: #fff; color: var(--green); font-size: 12px; text-decoration: none; line-height: 1.6; }
+.app-shell .navigation-details button:hover:not(:disabled), .app-shell .navigation-details a:hover { border-color: #a6c5b0; background: var(--light-green); }
+.app-shell .navigation-details > ol { list-style: none; padding: 0; margin: 20px 0; }
+.app-shell .navigation-details > ol > li { gap: 8px; margin: 0; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.app-shell .navigation-details > ol > li > button:first-child { margin-right: auto; font-size: 14px; font-weight: 600; background: #f6f9f6; color: var(--ink); }
+.app-shell .navigation-details li small { color: var(--muted); font-size: 11px; }
+.app-shell .nearby-controls { gap: 14px; padding: 20px; margin: 24px 0 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); }
+.app-shell .nearby-controls label { flex: 1 1 180px; gap: 7px; font-size: 12px; }
+.app-shell .nearby-controls :where(input, select) { width: 100%; min-width: 0; font-size: 13px; }
+.app-shell .nearby-controls > button { min-height: 42px; background: white; }
+.app-shell .nearby-controls > button[data-search] { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+.app-shell .navigation-details > [role=status] { padding: 11px 14px; border-radius: 7px; background: var(--light-green); color: #486a52; }
+.app-shell .navigation-details > [role=status]:empty { display: none; }
+.app-shell .nearby-results { margin-top: 20px; gap: 16px; }
+.app-shell .nearby-results > p { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+.app-shell .nearby-result { padding: 18px; border-color: var(--line); background: white; }
+.app-shell .nearby-result > strong { display: block; margin-bottom: 7px; font-size: 15px; }
+.app-shell .nearby-result > p { font-size: 12px; line-height: 1.8; margin: 5px 0; color: var(--muted); }
+.app-shell .nearby-result small { margin-top: 10px; font-size: 11px; color: var(--muted); }
+
+/* Full-page library and settings. */
+.app-shell #libraryDialog { padding: 26px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.app-shell #libraryDialog > p { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+.app-shell #libraryDialog > p > a { color: var(--green); }
+.app-shell #offlineStatus { font-size: 12px; color: var(--muted); }
+.app-shell .library-actions { align-items: center; gap: 9px; margin: 15px 0; }
+.app-shell .library-actions button, .app-shell .library-list button { min-height: 40px; padding: 9px 13px; border: 1px solid #d4dfd7; border-radius: 7px; background: #fff; color: #46674f; font-size: 13px; }
+.app-shell .library-actions button:hover:not(:disabled), .app-shell .library-list button:hover { background: var(--light-green); border-color: #afcbb8; }
+.app-shell .library-actions label { font-size: 12px; }
+.app-shell .library-group { margin: 16px 0; padding: 12px 16px; border-color: var(--line); border-radius: 9px; background: #fafcf9; }
+.app-shell .library-group summary { min-height: 36px; font-size: 13px; line-height: 2.4; }
+.app-shell .library-search { max-width: 460px; gap: 7px; margin: 20px 0 15px; font-size: 12px; color: var(--muted); }
+.app-shell .library-search input { width: 100%; }
+.app-shell .library-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 12px; margin: 16px 0 24px; }
+.app-shell .library-list button { min-height: 70px; padding: 15px; text-align: left; line-height: 1.8; }
+.app-shell .library-preview { height: 65dvh; min-height: 330px; border: 1px solid var(--line); border-radius: 9px; }
+.app-shell #libraryRoot p { font-size: 13px; line-height: 1.85; }
+.app-shell #libraryRoot [role=status] { padding: 11px 14px; border-radius: 7px; font-size: 12px; }
+.app-shell #libraryRoot [role=status]:empty { display: none; }
+.app-shell .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.app-shell .settings-card { min-width: 0; margin: 0; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.app-shell :is(.settings-card, .preferences-card, .trip-settings) > h3 { margin: 0 0 16px; font-size: 17px; font-weight: 650; }
+.app-shell .settings-card > .dialog-heading { position: static; top: auto; padding: 0; margin: 0 0 18px; background: transparent; }
+.app-shell .settings-card h3 { font-size: 17px; font-weight: 650; margin-bottom: 7px; }
+.app-shell .settings-card h2 { font-size: 19px; }
+.app-shell .settings-card > p { margin: 12px 0 18px; font-size: 13px; color: var(--muted); line-height: 1.85; }
+.app-shell .settings-card .field-label { font-size: 13px; }
+.app-shell .settings-card .key-input { border-radius: 9px; }
+.app-shell .key-input input { min-height: 42px; border: 0; background: transparent; }
+.app-shell .settings-card .privacy-note { margin: 12px 0; font-size: 12px; }
+.app-shell .connection-row { margin: 22px 0; padding: 18px 0; }
+.app-shell .connection-row strong { font-size: 14px; }
+.app-shell .connection-row p { margin-top: 5px; font-size: 12px; }
+.app-shell .small-badge { font-size: 10px; white-space: nowrap; }
+.app-shell .settings-card .dialog-actions { margin-top: 18px; }
+.app-shell #tripOptions { padding: 0; margin-top: 12px; border: 0; border-radius: 0; }
+.app-shell #tripOptions > summary { display: list-item; margin: 0 0 15px; padding: 0 0 13px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.6; font-weight: 500; }
+.app-shell #tripOptions > summary span { margin-left: 6px; font-size: 11px; }
+.app-shell #tripOptions > .trip-help { padding: 0; margin-bottom: 18px; font-size: 12px; }
+.app-shell #tripOptions > fieldset { padding: 0; }
+.app-shell .trip-grid { gap: 16px 14px; }
+.app-shell .trip-grid label { gap: 7px; font-size: 12px; }
+.app-shell .trip-grid :where(input, select) { width: 100%; height: auto; min-height: 42px; padding: 9px 10px; font-size: 13px; border-radius: 7px; }
+.app-shell .trip-options .companion-fields { gap: 10px 16px; margin: 18px 0; }
+.app-shell .companion-fields legend { padding-bottom: 4px; font-size: 12px; }
+.app-shell .companion-fields label { min-height: 32px; font-size: 12px; }
+.app-shell .companion-fields input { width: 16px; height: 16px; }
+.app-shell .trip-reset { min-height: 36px; padding: 8px 11px; border-radius: 7px; font-size: 12px; }
+.app-shell .preferences-card { grid-column: 1 / -1; }
+.app-shell .preferences-card .conversation-preferences { margin: 12px 0 0; padding: 0; border: 0; font-size: 13px; }
+.app-shell .preferences-card summary { padding: 9px 0; font-size: 14px; cursor: pointer; }
+.app-shell .preferences-card .conversation-preferences > p { margin: 12px 0; color: var(--muted); font-size: 12px; }
+.app-shell .preferences-card fieldset { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0; padding: 15px 18px; border: 1px solid var(--line); border-radius: 8px; }
+.app-shell .preferences-card legend { padding: 0 7px; font-size: 12px; }
+.app-shell .preferences-card fieldset label { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; font-size: 13px; }
+.app-shell .preferences-card fieldset input { width: 16px; height: 16px; }
+.app-shell .preferences-card details > label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 24px 18px 0; font-size: 13px; }
+.app-shell .preferences-card details > label :where(input, select) { min-width: 100px; max-width: 220px; }
+.app-shell .preferences-card details > button { min-height: 40px; padding: 9px 13px; margin: 0 8px 0 0; border: 1px solid #cddcd2; border-radius: 7px; background: white; color: var(--green); font-size: 13px; }
+.app-shell .preferences-card .preference-status { font-size: 12px; color: var(--green); }
+
+/* Focused operation dialogs. */
+.app-shell dialog { padding: 26px; border-radius: 13px; border-color: var(--line); box-shadow: 0 18px 75px #19352326; }
+.app-shell dialog::backdrop { background: #18362766; backdrop-filter: blur(2px); }
+.app-shell .roadbook-dialog { width: min(1120px, calc(100vw - 40px)); max-height: calc(100dvh - 40px); }
+.app-shell dialog .dialog-heading { top: -26px; margin: -1px 0 14px; padding: 12px 0; border-bottom: 1px solid var(--line); background: white; }
+.app-shell dialog .dialog-heading h2 { font-size: 21px; margin: 0; }
+.app-shell dialog p { font-size: 13px; line-height: 1.85; }
+.app-shell .roadbook-actions { gap: 10px; margin: 16px 0; }
+.app-shell .roadbook-actions button { min-height: 40px; padding: 9px 13px; border-color: #d3e0d6; border-radius: 7px; background: #f5f9f5; color: var(--green); font-size: 13px; }
+.app-shell .roadbook-actions label { gap: 7px; font-size: 12px; }
+.app-shell #roadbookPreview, .app-shell #sharePreview { border-color: var(--line); border-radius: 8px; }
+.app-shell .poi-item { padding: 18px 0; }
+.app-shell .poi-item strong { font-size: 15px; }
+.app-shell .poi-item p { font-size: 12px; }
+.app-shell .toast { bottom: 24px; border-radius: 9px; font-size: 13px; }
+
+@media (min-width: 1700px) {
+  .app-shell .workspace-main { padding: 30px 36px 48px; }
+  .app-shell .workspace.explore-workspace { grid-template-columns: 390px minmax(0, 1fr); gap: 28px; }
+  .app-shell .spatial-stage { height: clamp(440px, 56dvh, 680px); }
+}
+
+@media (max-width: 1180px) and (min-width: 701px) {
+  .app-shell .workspace-main { padding: 22px; }
+  .app-shell #workspaceNav { padding-right: 10px; padding-left: 10px; padding: 10px 8px; }
+  .app-shell .workspace.explore-workspace { grid-template-columns: 320px minmax(0, 1fr); gap: 18px; }
+  .app-shell .chat-panel { padding: 18px; }
+  .app-shell .map-panel { padding: 20px; }
+  .app-shell .route-heading h2 { font-size: 23px; }
+  .app-shell .itinerary-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 20px; }
+  .app-shell .itinerary-overview { padding: 18px; }
+  .app-shell { grid-template-columns: 160px minmax(0, 1fr); }
+  .app-shell .sidebar-intro, .app-shell .sidebar-note { margin-left: 20px; margin-right: 20px; }
+}
+
+@media (max-width: 1050px) and (min-width: 701px) {
+  .app-shell #workspaceNav { padding: 0 8px; gap: 8px; }
+  .app-shell #workspaceNav a[data-workspace-link] { flex-direction: column; justify-content: center; gap: 5px; min-height: 66px; padding: 9px 4px; font-size: 10px; }
+  .app-shell #workspaceNav a[data-workspace-link] svg { width: 20px; height: 20px; }
+  .app-shell .topbar { padding: 0 24px; }
+  .app-shell .topbar-right { gap: 14px; }
+  .app-shell .team-name { display: none; }
+  .app-shell .workspace.explore-workspace { grid-template-columns: 310px minmax(0, 1fr); gap: 18px; }
+  .app-shell .map-panel { padding: 18px; }
+  .app-shell .map-toolbar { flex-wrap: wrap; }
+  .app-shell .mood { flex: 1 1 100%; }
+  .app-shell .map-actions { margin-left: auto; }
+  .app-shell .map-footer { flex-direction: column; gap: 3px; }
+  .app-shell .active-time { white-space: normal; max-width: 70px; }
+  .app-shell .view-heading { gap: 18px; }
+  .app-shell .view-actions { max-width: 45%; }
+  .app-shell .travel-plan { padding: 24px; }
+  .app-shell .travel-stop { grid-template-columns: minmax(180px, 32%) minmax(0, 1fr); }
+  .app-shell .travel-stop-content { padding: 18px 20px; }
+  .app-shell { grid-template-columns: 78px minmax(0, 1fr); }
+  .app-shell .workspace-sidebar { padding: 18px 0; }
+  .app-shell .sidebar-intro, .app-shell .sidebar-note { display: none; }
+  .app-shell .active-stop-strip { flex-wrap: wrap; }
+  .app-shell .active-stop-link { margin-left: 48px; }
+}
+
+@media (max-width: 880px) and (min-width: 701px) {
+  .app-shell .workspace-main { padding: 18px; }
+  .app-shell .workspace.explore-workspace { grid-template-columns: 285px minmax(0, 1fr); gap: 16px; }
+  .app-shell .chat-panel { padding: 16px; }
+  .app-shell .map-panel { padding: 16px; }
+  .app-shell .route-heading h2 { font-size: 21px; }
+  .app-shell .spatial-stage { height: 420px; }
+  .app-shell .day-navigation { padding: 10px; }
+  .app-shell .itinerary-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
+  .app-shell .itinerary-editor { padding: 0 18px 18px; }
+  .app-shell .itinerary-editor > summary { margin: 0 -18px 16px; padding: 16px 18px; }
+  .app-shell .edit-stop { padding: 14px; }
+  .app-shell .place-search label { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .settings-grid { gap: 18px; }
+  .app-shell .settings-card { padding: 20px; }
+  .app-shell .trip-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .app-shell { --shell-top: 64px; display: block; }
+  .app-shell .topbar { padding: 0 16px; gap: 10px; }
+  .app-shell .brand-icon { width: 32px; height: 32px; border-radius: 9px; }
+  .app-shell .brand h1 { font-size: 20px; }
+  .app-shell .brand h1 span { display: none; }
+  .app-shell .topbar-right { gap: 10px; }
+  .app-shell .team-name { display: none; }
+  .app-shell .connection-state { max-width: 160px; font-size: 10px; gap: 6px; }
+  .app-shell .connection-state > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .app-shell #workspaceNav { position: fixed; inset: auto 0 0; z-index: 1200; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; padding: 5px 5px calc(5px + env(safe-area-inset-bottom, 0px)); border: 0; border-top: 1px solid var(--line); box-shadow: 0 -4px 22px #233c2b06; margin: 0; background: #fff; }
+  .app-shell #workspaceNav a[data-workspace-link] { flex-direction: column; justify-content: center; gap: 4px; min-height: 54px; padding: 6px 1px; border-color: transparent; border-radius: 8px; font-size: 10px; line-height: 1.4; }
+  .app-shell #workspaceNav a[data-workspace-link] svg { width: 20px; height: 20px; }
+  .app-shell #workspaceNav a[data-workspace-link][aria-current=page] { border-color: transparent; }
+  .app-shell .workspace-main { padding: 16px 14px calc(88px + env(safe-area-inset-bottom, 0px)); }
+  .app-shell .workspace-view { scroll-margin-top: 78px; }
+  .app-shell .workspace-status { padding: 9px 11px; margin-bottom: 14px; font-size: 11px; }
+  .app-shell #reviewShortcut { padding: 11px 13px; margin-bottom: 14px; font-size: 12px; }
+  .app-shell .view-heading { flex-direction: column; gap: 16px; margin: 2px 2px 20px; }
+  .app-shell .view-heading h2 { font-size: 23px; }
+  .app-shell .view-heading p { font-size: 13px; }
+  .app-shell .workspace-card { padding: 20px; }
+  .app-shell .view-actions { justify-content: flex-start; width: 100%; }
+  .app-shell .view-actions :where(button, a) { flex: 0 1 auto; min-height: 42px; font-size: 12px; }
+  .app-shell .workspace.explore-workspace { display: flex; flex-direction: column; gap: 18px; padding: 0; }
+  .app-shell .chat-panel { position: static; width: 100%; max-height: none; padding: 18px; border-radius: 12px; overflow: visible; }
+  .app-shell .chat-heading { padding-bottom: 14px; }
+  .app-shell .conversation-panel { margin-top: 14px; }
+  .app-shell .conversation-controls button { min-height: 40px; padding: 8px 11px; }
+  .app-shell .conversation-messages { max-height: 330px; min-height: 100px; gap: 12px; }
+  .app-shell .conversation-message { padding: 12px 14px; }
+  .app-shell #routeForm { margin-top: 10px; padding-top: 14px; }
+  .app-shell #promptInput { grid-column: auto; grid-row: auto; height: 115px; min-height: 100px; padding: 12px; font-size: 16px; line-height: 1.8; }
+  .app-shell #generateButton { grid-column: auto; grid-row: auto; min-height: 44px; padding: 11px 15px; margin: 0; margin-top: 10px; }
+  .app-shell #generateButton span { flex: initial; }
+  .app-shell .example-prompts { margin-top: 15px; padding-top: 13px; gap: 7px; }
+  .app-shell .prompt-chip { min-height: 38px; padding: 8px 10px; }
+  .app-shell .planner-status { margin-top: 12px; }
+  .app-shell .agent-review { padding: 14px; }
+  .app-shell .agent-version { padding: 12px; }
+  .app-shell .agent-controls button, .app-shell .agent-version button { min-height: 42px; }
+  .app-shell .map-panel { width: 100%; padding: 18px; border-radius: 12px; }
+  .app-shell .route-heading { margin-bottom: 17px; }
+  .app-shell .route-heading h2 { font-size: 23px; margin: 8px 0; }
+  .app-shell .route-heading p { font-size: 12px; }
+  .app-shell .day-navigation { padding: 10px 12px; gap: 10px 14px; }
+  .app-shell .day-navigation select { min-height: 42px; min-width: 115px; }
+  .app-shell .map-toolbar { flex-wrap: wrap; margin: 14px 0 10px; }
+  .app-shell .mood { font-size: 11px; flex: 1 1 120px; }
+  .app-shell .map-actions { margin-left: auto; }
+  .app-shell .view-toggle button { min-height: 38px; min-width: 55px; padding: 8px 9px; }
+  .app-shell .spatial-stage { height: clamp(340px, 54dvh, 470px); margin: 0; border-radius: 9px; }
+  .app-shell .map-footer { flex-wrap: wrap; margin: 9px 0 14px; gap: 4px 10px; }
+  .app-shell .map-footer > span:last-child { text-align: left; }
+  .app-shell .active-stop-strip { gap: 10px; padding-top: 14px; flex-wrap: wrap; }
+  .app-shell .active-time { font-size: 10px; max-width: 65px; white-space: normal; }
+  .app-shell .itinerary-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .app-shell .itinerary-overview { padding: 20px; }
+  .app-shell .itinerary-overview .route-stats { margin: 0; padding: 0 0 18px; }
+  .app-shell .stop-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+  .app-shell .stop-list li:not(:last-child)::before { display: none; }
+  .app-shell .stop-list button { min-height: 48px; gap: 7px; }
+  .app-shell .stop-list time { display: none; }
+  .app-shell .stop-label { font-size: 12px; }
+  .app-shell .itinerary-editor { padding: 0 18px 20px; }
+  .app-shell .itinerary-editor > summary { margin: 0 -18px 16px; padding: 17px 18px; }
+  .app-shell .itinerary-editor label { display: flex; flex-wrap: wrap; align-items: center; }
+  .app-shell .itinerary-editor :where(input, select) { min-height: 42px; }
+  .app-shell .itinerary-editor button { min-height: 42px; padding: 9px 10px; }
+  .app-shell .edit-stop { padding: 15px; }
+  .app-shell .day-form { padding: 15px; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .app-shell .place-search label { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .travel-plan { padding: 20px 16px; border-radius: 12px; }
+  .app-shell .travel-plan-heading { align-items: flex-start; gap: 12px; }
+  .app-shell .travel-plan-heading h3 { font-size: 18px; }
+  .app-shell .travel-plan-heading .story-controls { margin-left: 0; }
+  .app-shell .story-controls > span { display: inline; font-size: 11px; margin-right: 3px; }
+  .app-shell .story-controls .icon-btn { min-width: 40px; min-height: 40px; width: 40px; height: 40px; flex-basis: 40px; }
+  .app-shell .travel-plan-note { margin-bottom: 18px; font-size: 12px; }
+  .app-shell .travel-day { margin-top: 25px; }
+  .app-shell .travel-day-heading h4 { font-size: 17px; }
+  .app-shell .travel-stops { gap: 18px; }
+  .app-shell .travel-stop { grid-template-columns: minmax(0, 1fr); border-radius: 10px; }
+  .app-shell .travel-stop-photo img { height: 220px; min-height: 0; flex: none; }
+  .app-shell .travel-photo-placeholder { min-height: 160px; }
+  .app-shell .travel-stop-content { padding: 18px; }
+  .app-shell .travel-stop-title { font-size: 20px; }
+  .app-shell .travel-stop-actions > :where(a, button) { min-height: 42px; padding: 9px 10px; }
+  .app-shell .travel-hotel-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .travel-hotel { padding: 16px; }
+  .app-shell .travel-hotel > img { height: 200px; }
+  .app-shell .navigation-details { padding: 0 18px 20px; }
+  .app-shell .navigation-details > summary { margin: 0 -18px 16px; padding: 17px 18px; }
+  .app-shell .navigation-details button, .app-shell .navigation-details a { min-height: 42px; }
+  .app-shell .navigation-details > ol > li { padding: 15px 0; }
+  .app-shell .navigation-details > ol > li > button:first-child { margin-right: 0; flex: 1 1 100%; justify-content: flex-start; }
+  .app-shell .nearby-controls { padding: 16px; margin-top: 20px; }
+  .app-shell .nearby-controls label { flex: 1 1 100%; }
+  .app-shell .nearby-controls > button { min-height: 44px; }
+  .app-shell .nearby-results { grid-template-columns: minmax(0, 1fr); }
+  .app-shell #libraryDialog { padding: 20px 16px; }
+  .app-shell .library-actions { flex-direction: row; flex-wrap: wrap; }
+  .app-shell .library-actions > * { max-width: 100%; }
+  .app-shell .library-actions button { min-height: 44px; font-size: 12px; }
+  .app-shell .library-actions label { flex: 1 1 100%; }
+  .app-shell .library-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .app-shell .library-list button { min-height: 66px; }
+  .app-shell .library-group { padding: 10px 12px; }
+  .app-shell .library-preview { height: 60dvh; min-height: 350px; }
+  .app-shell .settings-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .app-shell .settings-card { padding: 20px; }
+  .app-shell #tripOptions { padding-top: 0; padding: 0; }
+  .app-shell #tripOptions > summary { margin: 0 0 16px; padding: 0 0 13px; }
+  .app-shell .trip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; }
+  .app-shell .trip-grid :where(input, select) { padding: 9px 8px; }
+  .app-shell .preferences-card { grid-column: auto; }
+  .app-shell .preferences-card fieldset { gap: 10px 16px; padding: 12px 14px; }
+  .app-shell .preferences-card details > label { display: flex; justify-content: space-between; margin: 0 0 14px; }
+  .app-shell .preferences-card details > label :where(input, select) { max-width: 58%; flex: 1; }
+  .app-shell .preferences-card details > button { min-height: 44px; margin-top: 5px; }
+  .app-shell .settings-card .dialog-actions { gap: 10px; }
+  .app-shell .settings-card .dialog-actions > .primary-btn { min-width: 0; }
+  .app-shell .connection-row { gap: 10px; }
+  .app-shell .connection-row p { font-size: 11px; }
+  .app-shell dialog { padding: 20px; max-width: calc(100vw - 20px); border-radius: 12px; }
+  .app-shell .roadbook-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 24px); }
+  .app-shell dialog .dialog-heading { top: -20px; gap: 10px; padding: 10px 0 14px; }
+  .app-shell dialog .dialog-heading h2 { font-size: 18px; }
+  .app-shell dialog .dialog-heading button { flex-shrink: 0; min-height: 40px; font-size: 12px; }
+  .app-shell .roadbook-actions button { min-height: 44px; font-size: 12px; }
+  .app-shell .roadbook-actions label { width: 100%; }
+  .app-shell .toast { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 28px); padding: 12px 16px; font-size: 12px; }
+  .app-shell .page-footer { display: none; }
+  .app-shell .workspace-sidebar { display: contents; }
+  .app-shell .sidebar-intro, .app-shell .sidebar-note { display: none; }
+  .app-shell .view-heading > .secondary-btn { align-self: flex-start; }
+  .app-shell .explore-view > .view-heading { margin-bottom: 17px; gap: 12px; }
+  .app-shell .explore-view > .view-heading h2 { font-size: 22px; }
+  .app-shell .explore-view > .view-heading .secondary-btn { display: none; }
+  .app-shell .chat-heading p { font-size: 11px; }
+  .app-shell .demo-picker summary { min-height: 38px; font-size: 12px; }
+  .app-shell .active-stop-link { margin-left: 46px; min-height: 34px; font-size: 12px; padding-top: 0; }
+}
+
+@media (max-width: 370px) {
+  .app-shell .workspace-main { padding-right: 10px; padding-left: 10px; }
+  .app-shell .chat-panel, .app-shell .map-panel { padding: 15px; }
+  .app-shell .connection-state { max-width: 135px; }
+  .app-shell #generateButton { padding: 10px 12px; }
+  .app-shell #generateButton svg:last-child { display: none; }
+  .app-shell .mood { flex-basis: 100%; }
+  .app-shell .trip-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .stop-list { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .story-controls > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *, .app-shell *::before, .app-shell *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

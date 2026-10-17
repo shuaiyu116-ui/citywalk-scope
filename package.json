@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/location-photos.test.mjs test/location-photo-proxy.test.mjs"
+    "test": "node --test test/workspace-router.test.mjs test/workspace-layout.test.mjs test/trip-context-view.test.mjs test/location-photos.test.mjs test/location-photo-proxy.test.mjs test/ctrip-mcp.test.mjs test/ctrip-hotels.test.cjs test/itinerary.test.cjs test/route-planner.test.cjs test/transport.test.cjs test/schedule.test.cjs test/editor.test.cjs test/days.test.cjs test/agent.test.cjs test/agent-decision.test.cjs test/agent-client.test.mjs test/place-identity.test.cjs test/conversation.test.cjs test/conversation-dialogue.test.cjs test/conversation-preflight.test.cjs test/nearby-api.test.cjs test/journey.test.cjs test/roadbook.test.mjs test/roadbook-photos.test.mjs test/travel-plan.test.mjs test/travel-plan-view.test.mjs test/travel-plan-http.test.cjs test/share.test.cjs test/library.test.cjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -16,3 +16,8 @@
     "three": "^0.180.0"
   }
 }
+
+
+
+
+

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f5f3">
+  <title>本机行程库 · 先行</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/library.css">
+  <link rel="stylesheet" href="/standalone.css">
+</head>
+<body class="library-page standalone-page">
+  <a class="standalone-skip" href="#libraryRoot">跳到本机行程库</a>
+  <header class="standalone-header">
+    <a class="standalone-brand" href="/#explore" aria-label="先行 Citywalk Scope 首页"><span class="standalone-brand-mark" aria-hidden="true">先</span><span>先行 <small>Citywalk Scope</small></span></a>
+    <nav class="standalone-nav" aria-label="应用导航"><a href="/#explore" id="plannerLink">返回探索</a><a href="/library.html" aria-current="page">本机收藏</a></nav>
+  </header>
+  <main class="standalone-main" aria-labelledby="libraryPageTitle">
+    <section class="standalone-intro"><span class="standalone-kicker">留住每一段旅行</span><h1 id="libraryPageTitle">本机行程库</h1><p>可离线阅读已保存路书、整理历史和导出备份。离线不生成路线、不加载地图或在线导航。</p></section>
+    <p id="offlineStatus" class="standalone-status" role="status"></p>
+    <div id="libraryRoot" class="standalone-card" tabindex="-1"></div>
+  </main>
+  <footer class="standalone-footer"><span>先行 · Citywalk Scope</span><span>旅行从一个想法开始</span></footer>
+  <script type="module" src="/library-page.mjs"></script>
+</body>
+</html>

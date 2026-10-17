@@ -32,10 +32,26 @@ test('the image endpoint cannot fetch arbitrary URLs or local network services',
     for (const url of [
       'http://127.0.0.1/private', 'https://example.com/photo.jpg',
       'https://img1.baidu.com.example.com/photo.jpg',
-      'https://img1.baidu.com:8443/photo.jpg', 'https://user@img1.baidu.com/photo.jpg'
+      'https://img1.baidu.com:8443/photo.jpg', 'https://user@img1.baidu.com/photo.jpg',
+      'https://images.c-ctrip.com.evil.example/photo.jpg', 'https://c-ctrip.com/photo.jpg',
+      'https://www.ctrip.com/private'
     ]) {
       await assert.rejects(getLocationPhotoBytes(url), error => error.statusCode === 400);
     }
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('Ctrip raster photos use the same validated byte cache without browser CORS', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url.hostname, 'dimg04.c-ctrip.com');
+    assert.equal(options.headers.Referer, 'https://www.ctrip.com/');
+    return new Response(jpeg, { headers: { 'content-type': 'image/jpeg' } });
+  };
+  try {
+    const result = await getLocationPhotoBytes('https://dimg04.c-ctrip.com/images/offline-export-test.jpg');
+    assert.equal(result.contentType, 'image/jpeg');
+    assert.deepEqual(result.data, Buffer.from(jpeg));
   } finally { globalThis.fetch = originalFetch; }
 });
 

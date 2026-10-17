@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#f3f5f3">
+  <title>只读行程分享 · 先行</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/standalone.css">
+</head>
+<body class="share-page standalone-page">
+  <a class="standalone-skip" href="#shareTitle">跳到分享行程</a>
+  <header class="standalone-header">
+    <a class="standalone-brand" href="/#explore" aria-label="先行 Citywalk Scope 首页"><span class="standalone-brand-mark" aria-hidden="true">先</span><span>先行 <small>Citywalk Scope</small></span></a>
+    <nav class="standalone-nav" aria-label="应用导航"><a href="/#explore">返回探索</a><a href="/library.html">本机收藏</a></nav>
+  </header>
+  <main id="shareDialog" class="standalone-main" aria-labelledby="shareTitle">
+    <section class="standalone-intro"><span class="standalone-kicker">把旅行灵感分享出去</span><div class="standalone-title-row"><h1 id="shareTitle" tabindex="-1">行程分享</h1><button type="button" id="closeShare" class="secondary-btn">返回探索</button></div><p>查看朋友的旅行安排，也可以重新核对地点后，复制为自己的行程。</p></section>
+    <p class="standalone-notice">完整版本保存在链接中，无服务端存储，不是短链。不会随原行程更新；无账号、无需本机存储。链接不加密，无法远程撤回；约定过期仅由网页检查，并非访问控制。请勿分享敏感信息。</p>
+    <section class="standalone-card" aria-label="分享行程与操作">
+    <div id="shareOutgoing" hidden>
+      <p>只导出行程公开字段，不含 Key、完整对话、已保存偏好、定位信息或内部签名。本次同行、日期、住宿备注、预订和已游览记录会出现在下方预览中；请检查自由文字中的个人信息。</p>
+      <label><input id="shareConsent" type="checkbox"> 我已检查下方预览，同意公开这些行程内容</label>
+      <div class="roadbook-actions"><label>约定有效期<select id="shareExpiry"><option value="0">不自动过期</option><option value="7">7 天</option><option value="30">30 天</option></select></label><button id="generateShare" type="button">生成此版分享链接</button><button id="copyShareLink" type="button" disabled>复制完整链接</button></div>
+      <label for="shareLink">完整链接（剪贴板不可用时可手动复制）</label><textarea id="shareLink" readonly spellcheck="false"></textarea>
+      <p>聊天软件可能截断长链接；过长时改用路书中的 JSON / HTML 文件。网站停止服务时，链接页面也无法打开，请另存路书。</p>
+    </div>
+    <div id="shareIncoming" hidden>
+      <p>只读快照不是地点事实认证。复制时将保留地点顺序、日期、分日、停留、锁定和交通偏好，重新查询地点并生成新身份。不会沿用原作者的同行、住宿、预订、已游览、自填营业规则或自由文字；复制需要联网和可用地点服务，不需要 DeepSeek Key。</p>
+      <div class="roadbook-actions"><button id="rebuildShared" type="button" disabled>复制为我的行程（重新核对）</button><button id="cancelShareCopy" type="button" hidden>取消核对</button><button id="acceptShared" type="button" hidden>接受交通未知并采用新副本</button></div>
+    </div>
+    <p id="shareStatus" class="standalone-status" role="status" aria-live="polite"></p>
+    <div class="roadbook-actions"><button id="shareJson" type="button" disabled>下载分享原版 JSON</button></div>
+    <iframe id="sharePreview" title="分享行程只读预览" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+    </section>
+  </main>
+  <footer class="standalone-footer"><span>先行 · Citywalk Scope</span><span>旅行从一个想法开始</span></footer>
+  <script type="module" src="/share-page.mjs"></script>
+</body>
+</html>
