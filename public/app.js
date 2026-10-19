@@ -18,6 +18,9 @@ import { createLibraryView } from '/library-view.mjs';
 import { enableOffline } from '/offline-register.mjs';
 import { initWorkspaceUI } from '/ui-interactions.mjs';
 import { createWorkspaceRouter } from '/workspace-router.mjs';
+import { createDeviceProfileStore } from '/device-profile.mjs';
+import { createProfileView } from '/profile-view.mjs';
+import { planningProfileInput, manualProfileInput } from '/profile-input.mjs';
 
 const $ = selector => document.querySelector(selector);
 const icons = () => window.lucide.createIcons();
@@ -25,6 +28,13 @@ let storedKey = '';
 try { storedKey = sessionStorage.getItem('deepseekKey') || ''; } catch { /* Private sessions may block storage. */ }
 const state = { route: null, deepseekKey: storedKey, serverAI: null, busy: false, activeStop: 0, view: '2d', source: 'demo', workflow: null, poiSource: null, playing: false };
 const conversationMemory = new ConversationState();
+const deviceProfile = createDeviceProfileStore();
+conversationMemory.preferences = deviceProfile.getPreferences();
+createProfileView({ root: $('#profileRoot'), store: deviceProfile });
+// Run only after result presentation; the route UI never waits for this request.
+function updateProfileInBackground(input) {
+  if (input) setTimeout(() => { void deviceProfile.enqueue(input, () => state.deepseekKey); }, 0);
+}
 let scene, map, routeLayer, routePathLayer, routeBounds, mapMarkers = [], playTimer;
 let transportRequestId = 0, transportController;
 let editSession, workspaceRouter;
@@ -78,20 +88,30 @@ function applyDayVisibility() {
 }
 const invalidateEdits = () => { transportController?.abort(); transportRequestId++; };
 const editorView = createEditorView({ getSession: () => editSession, selectStop: viewOnMap, invalidate: invalidateEdits,
-resetForms: () => { delete $('#scheduleDetails').dataset.revision; updateScheduleView(state.route); }, publish: route => {
+resetForms: () => { delete $('#scheduleDetails').dataset.revision; updateScheduleView(state.route); }, publish: (route, metadata = {}) => {
+  const profileInput = metadata.undo ? null : manualProfileInput(state.route, route);
   invalidateEdits();
   const activeId = state.route?.stops[state.activeStop]?.id;
   renderRoute(route, route.source, { poiSource: route.poiSource, workflow: state.workflow, edited: true });
   setActiveStop(Math.max(0, route.stops.findIndex(s => s.id === activeId)));
+  updateProfileInBackground(profileInput);
 } });
 const navigationView = createNavigationView({root:$('#navigationDetails'),getSession:()=>editSession,stage:action=>editorView.stage(action),commit:allow=>editorView.commit(allow),selectStop:viewOnMap,isBusy:()=>state.busy,retryTransport:()=>loadTransport(state.route),revealEditor:()=>workspaceRouter.reveal('itineraryEditor')});
-const conversationView = createConversationView({root:$('#conversationPanel'),preferencesRoot:$('#preferencesRoot'),memory:conversationMemory,getRoute:()=>state.route,onMode:mode=>{
+const conversationView = createConversationView({root:$('#conversationPanel'),preferencesRoot:$('#preferencesRoot'),memory:conversationMemory,getRoute:()=>state.route,onPreferencesChange:value=>deviceProfile.setPreferences(value),onMode:mode=>{
   if(state.busy || editSession?.draft || editSession?.busy){toast('请先取消规划、提交或放弃编辑草稿。');return;}
   if(mode==='new'){conversationMemory.reset();conversationView.resetMessages();$('#resetTripConditions').click();}else{conversationMemory.mode='edit';conversationMemory.pending=null;}
   lastGenerationInput=null;$('#retryGeneration').hidden=true;agentView.clear();conversationView.clearQuestion();conversationView.render();
   $('#promptInput').value='';$('#promptInput').placeholder=mode==='edit'?'例如：第一站停留20分钟；把安福路移到第二天。':'告诉我城市和想体验的内容。';focusPrompt();
   $('#generateButton span').textContent=mode==='edit'?'发送修改要求':'生成我的路线';
 }});
+let savedPreferences = JSON.stringify(conversationMemory.preferences);
+deviceProfile.subscribe(snapshot => {
+  const preferences = JSON.stringify(snapshot.preferences);
+  if (preferences !== savedPreferences) {
+    savedPreferences = preferences;
+    conversationView.syncPreferences(snapshot.preferences);
+  }
+});
 const agentView = createAgentView({ root: $('#agentReview'), discard: () => {
   conversationView.reply('已放弃这条方案。可以重新提出需求，当前地图中的行程未改变。');
   $('#generationStatus').textContent = '方案已放弃，可以继续输入。';
@@ -639,6 +659,7 @@ async function generateRoute(event, retry = false, example = false) {
     else input.exampleCity = /北京|南京|上海/.exec(prompt)?.[0] || '上海';
   }
   if(input.conversation?.mode==='edit') input={...input,currentRoute:structuredClone(state.route)};
+  if(input.conversation) input.conversation={...input.conversation,profile:deviceProfile.getProfileForPlanning()};
   const uiBase=state.route?{id:state.route.id,revision:state.route.revision.number}:null;
   lastGenerationInput = structuredClone(input);
   const requestId = ++generationRequestId;
@@ -688,6 +709,7 @@ async function generateRoute(event, retry = false, example = false) {
     if(result.conversation?.status==='reply'){
       conversationMemory.pending=null;conversationView.clearQuestion();agentView.clear();
       conversationView.reply(result.conversation.reply);$('#generationStatus').textContent='可以继续对话，当前行程未改变。';
+      updateProfileInBackground(planningProfileInput({ ...input, apiKey: state.deepseekKey }));
       $('#promptInput').value='';focusPrompt();return;
     }
     if(result.conversation?.status==='clarify'){
@@ -702,6 +724,7 @@ async function generateRoute(event, retry = false, example = false) {
     $('#generationStatus').classList.remove('warning');
     $('#promptInput').value='';
     if (workspaceRouter.current() === 'explore') $('#agentReview').scrollIntoView({ block:'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+    updateProfileInBackground(planningProfileInput({ ...input, apiKey: state.deepseekKey }));
   } catch (error) {
     if (generationRequestId !== requestId) return;
     const message = controller.signal.aborted ? timedOut ? '规划超时，当前路线已保留，可重试。' : '规划已取消，当前路线已保留。' : error instanceof TypeError ? '网络连接中断，当前路线已保留，可重试。' : error.message;

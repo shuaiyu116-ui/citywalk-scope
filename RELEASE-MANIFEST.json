@@ -2,7 +2,7 @@
   "format": "citywalk-release",
   "version": 1,
   "release": "W14",
-  "builtAt": "2026-10-17T19:22:17.073Z",
+  "builtAt": "2026-10-19T02:20:47.779Z",
   "files": [
     {
       "path": ".dockerignore",
@@ -21,13 +21,13 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 88447,
-      "sha256": "7b69d47d8da6c8e445acef1d0997d77a1e528cea6ac676a8408923115fe6de20"
+      "bytes": 94438,
+      "sha256": "496937b080fe30b351e6bfc2ddd75731c58675124fc6cd8f7ee74198428873d3"
     },
     {
       "path": "DEPLOY.md",
-      "bytes": 6966,
-      "sha256": "e439e0cd174e074e87d2300a46641d6b2bb598c5d4f026617159e73f88e4cf4b"
+      "bytes": 8942,
+      "sha256": "40d19943d19ee2c859542a7017181da224c2796abc543c248d67c8a1cffc6517"
     },
     {
       "path": "Dockerfile",
@@ -36,8 +36,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6830,
-      "sha256": "0240d7713105188e39e18859c09e2e6602aa24782ef3b49edf1427ac6efc34fb"
+      "bytes": 7746,
+      "sha256": "6035f777ca9578cecf58556148340e0cf3613bd681942328465cb52b70977ca8"
     },
     {
       "path": "Start-Citywalk.cmd",
@@ -81,8 +81,8 @@
     },
     {
       "path": "docs/功能边界.md",
-      "bytes": 4073,
-      "sha256": "fc581ae11a02255c2391626b547af9fb60f3c4736f472c0e00b477b113b2e562"
+      "bytes": 4754,
+      "sha256": "3ac98d34812f0b8aa7b8f42feacb6a86277cf104e8023a22b7c58ec5b3261953"
     },
     {
       "path": "docs/旅行路书与酒店选择-2026-10-17.md",
@@ -101,13 +101,18 @@
     },
     {
       "path": "docs/线上澄清回答修复-2026-10-18.md",
-      "bytes": 3568,
-      "sha256": "8b764d524dfc9b00db95f8ce3a34fb57bf4a1b897cae7e5f0c8323ae8746ea1c"
+      "bytes": 4461,
+      "sha256": "21a58439c20df85f84240a6e494fc67aa3be7f8dfa286053e1a5cc7848ec621e"
     },
     {
       "path": "docs/老师建议与优化方向整理.md",
       "bytes": 19149,
       "sha256": "02cd94585b06f1de59d95bc6021a342562273b4cfa834f233dbe259b29c2354e"
+    },
+    {
+      "path": "docs/设备用户画像-2026-10-19.md",
+      "bytes": 8345,
+      "sha256": "85eda69ebb122524be7d8331d5ad9574aec1e64c172922542ee5e716a2b9cf50"
     },
     {
       "path": "docs/试用问题修复-2026-10-17.md",
@@ -116,8 +121,8 @@
     },
     {
       "path": "lib/agent-decision.js",
-      "bytes": 13231,
-      "sha256": "895b2314485ecc082304539a7f3195d5d76f78a3fd78aacca0798e8ef5ff6c74"
+      "bytes": 13664,
+      "sha256": "22e9924b42162e39b1dbd6abcfd8b593b3c3ea01104fb94d4ec6ca699ccb6542"
     },
     {
       "path": "lib/agent-scope.js",
@@ -131,8 +136,8 @@
     },
     {
       "path": "lib/conversation-planner.js",
-      "bytes": 22417,
-      "sha256": "4e2e3f33b4e448ac1fa3220f4cda3e176d11e4fd0c69dac697ec3a4bb1cd045f"
+      "bytes": 23128,
+      "sha256": "d3f4a6e0d1880b2c0225e232a69e59672360632a909bb23b5103ef1ce1938d82"
     },
     {
       "path": "lib/conversation-preflight.js",
@@ -146,8 +151,8 @@
     },
     {
       "path": "lib/conversation.js",
-      "bytes": 8560,
-      "sha256": "56dc35bb809274fc646f4631b8da63820900a8475f7bbfc60108ecbf7b764409"
+      "bytes": 8662,
+      "sha256": "383e57d721312a610aae1b0ac1ffb516392c2d2f73ff69ca3cdf3631fa38ad48"
     },
     {
       "path": "lib/ctrip-hotels.js",
@@ -220,6 +225,11 @@
       "sha256": "16d6f3201600536107352a41683552d19f696873f88619f7d0a5dbd647645f6a"
     },
     {
+      "path": "lib/user-profile.js",
+      "bytes": 8975,
+      "sha256": "21113ff068fe5b07e0882bfe547c1e105a6a07c9fc5422300fee74167414f698"
+    },
+    {
       "path": "lib/web-agent.js",
       "bytes": 10641,
       "sha256": "e978f977058507dd14be3e2ec68f1abbb28fc185403b829e06ceb0b92ca3301d"
@@ -231,8 +241,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1221,
-      "sha256": "42b668eaeac87dee121bd6b72741a0b8cc6a007c1c0d09428f9eacb111aab2db"
+      "bytes": 1495,
+      "sha256": "dc7c9922a9041d41135539cfe0200b83a04493ec435106ef7fe88084d520f9d1"
     },
     {
       "path": "public/agent-client.mjs",
@@ -246,8 +256,8 @@
     },
     {
       "path": "public/app.js",
-      "bytes": 55630,
-      "sha256": "7e22b845e8de158185d054c42dea75eee0129886a13815105952f4a106b56486"
+      "bytes": 57092,
+      "sha256": "b835e596e158456cb65f56bd0d85fff2f41b7f7de4fb63752342ce697ff43942"
     },
     {
       "path": "public/assets/ASSETS.md",
@@ -286,8 +296,8 @@
     },
     {
       "path": "public/conversation-view.mjs",
-      "bytes": 5506,
-      "sha256": "6b0ba0bc33dc2c1c1e044033ad72880c971b074ca018185d8f36019801597a46"
+      "bytes": 6045,
+      "sha256": "46db65c676b32fc821b1bbd45bef0f75ca1b40dd8dbd2f5e83f822be13c021d7"
     },
     {
       "path": "public/coordinates.mjs",
@@ -305,14 +315,19 @@
       "sha256": "4857610055df542e4b8dca089e2eac763e1e5b8517686ebfa035d2c2b78bc167"
     },
     {
+      "path": "public/device-profile.mjs",
+      "bytes": 9486,
+      "sha256": "d103afd0d633488a0ee47fd40e27a1495bfd2ed45036ba815a0ff0dab0480c53"
+    },
+    {
       "path": "public/editor-view.mjs",
-      "bytes": 12868,
-      "sha256": "35ddba4ed6a1c3fe034ab5421a81797358acc8f445de21f1c4e117d21532d35a"
+      "bytes": 12884,
+      "sha256": "d92471711f4192cb09668844cd6acd357cf1100a05392bee425fd39156d747f3"
     },
     {
       "path": "public/index.html",
-      "bytes": 21919,
-      "sha256": "101f6a0b82a25d964418422074bd1ad7fe27bbd881f37104450155035070da84"
+      "bytes": 22310,
+      "sha256": "5f5122f07112eb095bad41c080727d489900b02d1c993083a502b5cc5e33bd7f"
     },
     {
       "path": "public/itinerary-editor.mjs",
@@ -383,6 +398,26 @@
       "path": "public/portable-route.mjs",
       "bytes": 8774,
       "sha256": "95b4f948176e23673bf9ad910098a2672f16a8113ae1379ea3dd8eac18e8f9c4"
+    },
+    {
+      "path": "public/profile-input.mjs",
+      "bytes": 7652,
+      "sha256": "21da093c56e37f2339e32feebf02ae29c51ae1fba7716150cef909d5822f5002"
+    },
+    {
+      "path": "public/profile-schema.mjs",
+      "bytes": 2277,
+      "sha256": "a103df4980452ed2aad7727f96beff9736807f35b096eda254bb90caf8f3c802"
+    },
+    {
+      "path": "public/profile-view.mjs",
+      "bytes": 7931,
+      "sha256": "1c99452e3d74181fa871285f3f59e1e7c953e384b323eb57824e2b8758f1de54"
+    },
+    {
+      "path": "public/profile.css",
+      "bytes": 2726,
+      "sha256": "02cdfc701d10f0e639b393aaabbf402d3b23c671650c6336bca91962b8509885"
     },
     {
       "path": "public/roadbook-photos.mjs",
@@ -511,8 +546,8 @@
     },
     {
       "path": "public/workspace.css",
-      "bytes": 46659,
-      "sha256": "7ddcde8890d132144e6fff3ea2e29a50d9097f86f611c67dc5b6081e08a3d94d"
+      "bytes": 47548,
+      "sha256": "883e11303a29700d0b179e6d74378254f020398f57ea9f30b8c7405f915d3a64"
     },
     {
       "path": "render.yaml",
@@ -531,8 +566,8 @@
     },
     {
       "path": "server.js",
-      "bytes": 51208,
-      "sha256": "3d903deba312c5a9d0679e8ff467ef1cd7800cf88077850866b0fbc1db301027"
+      "bytes": 53389,
+      "sha256": "3779501b67ded1117b20716d1b3c28a4a449d9a48426c4948d7bbede6b694641"
     },
     {
       "path": "test/agent-client.test.mjs",
@@ -585,6 +620,11 @@
       "sha256": "51f818ec859da5c905aca9bd71fb7b313f0297aa3ba5236d4323324bb1d573a1"
     },
     {
+      "path": "test/device-profile.test.mjs",
+      "bytes": 8947,
+      "sha256": "eec43bd6320a98061546fc444ffb35bb2ba45547ee96420612f7eb3ddf3846a5"
+    },
+    {
       "path": "test/editor.test.cjs",
       "bytes": 7563,
       "sha256": "61828067c86ac1faacd6400b64c54c340bcd4d7c6a842a581dcef030e450c9ca"
@@ -593,6 +633,11 @@
       "path": "test/fixtures/travel-plan-offline.cjs",
       "bytes": 3877,
       "sha256": "80418dbb26e955844749d4ecc771e526890784bb9473b2b3af18de7b5acfb5e2"
+    },
+    {
+      "path": "test/fixtures/user-profile-offline.cjs",
+      "bytes": 1037,
+      "sha256": "8a00501bf6d9110f7326b772b58566d47caab0d79e2e81320e56751b2e1086c0"
     },
     {
       "path": "test/fixtures/w01-offline.cjs",
@@ -661,8 +706,8 @@
     },
     {
       "path": "test/library.test.cjs",
-      "bytes": 5984,
-      "sha256": "77712681a0171e7aa19ccb75de7983398150e3791d4a3463401bfedd9f101760"
+      "bytes": 6037,
+      "sha256": "4ac8f25e7a4a0f4a3ebf14b3667ab173e57e5eb201f60863460632c64a6f4902"
     },
     {
       "path": "test/location-photo-proxy.test.mjs",
@@ -683,6 +728,16 @@
       "path": "test/place-identity.test.cjs",
       "bytes": 4127,
       "sha256": "65fe866f1e990ae6904d6f82ac1cede2449fa6b03f841816e23f197b3f186135"
+    },
+    {
+      "path": "test/profile-input.test.mjs",
+      "bytes": 8082,
+      "sha256": "caf03316bc1735641cfddc653c50d689f5bbea1832c1aa9b3b70e64cc9ad1c7d"
+    },
+    {
+      "path": "test/profile-view.test.mjs",
+      "bytes": 3297,
+      "sha256": "1a4bebdcd978cb33240340ca869e8018b4d44b8e8c142d905d112c86db4824c6"
     },
     {
       "path": "test/roadbook-photos.test.mjs",
@@ -706,8 +761,8 @@
     },
     {
       "path": "test/share.test.cjs",
-      "bytes": 7745,
-      "sha256": "fe7203fc0185e8e445d72e968958fbd9f23398e635066f50af67c9bb9729450c"
+      "bytes": 7802,
+      "sha256": "0b71a070e716521e3a34aa84e9d64d5d22b51829abcce8695473f345e6d15d90"
     },
     {
       "path": "test/transport.test.cjs",
@@ -735,9 +790,14 @@
       "sha256": "6d31bd50b71ad7b4e6a39db14f5fc189a3967826a1cd4034fa1f464c77918a65"
     },
     {
+      "path": "test/user-profile-backend.test.cjs",
+      "bytes": 11074,
+      "sha256": "86e6e88fe15bdbb06efbf600994d280d10bdadf3f29188e627d02edb853eb470"
+    },
+    {
       "path": "test/workspace-layout.test.mjs",
-      "bytes": 8080,
-      "sha256": "708c44c75314ebc2ec7ffc407bffdc8cf984183d80ccc7a83fbb632391027327"
+      "bytes": 8095,
+      "sha256": "ed775c3f95d76bded6f0bfd52e42e22e0b9b50326eaf8e7202b8f17e1d702825"
     },
     {
       "path": "test/workspace-router.test.mjs",

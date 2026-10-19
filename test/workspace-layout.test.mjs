@@ -95,7 +95,7 @@ test('conversation and map stay on explore while task controls belong to dedicat
     roadbook: ['libraryButton', 'shareButton', 'roadbookButton', 'roadbookDayNavigation', 'scheduleDetails', 'prevStop', 'playWalk', 'nextStop', 'walkCounter'],
     discover: ['syncButton', 'navigationDetails'],
     library: ['libraryDialog', 'libraryRoot', 'offlineStatus'],
-    settings: ['settingsDialog', 'settingsForm', 'deepseekKey', 'saveSettings', 'tripOptions', 'tripFields', 'preferencesRoot'],
+    settings: ['settingsDialog', 'settingsForm', 'deepseekKey', 'saveSettings', 'tripOptions', 'tripFields', 'preferencesRoot', 'profileRoot'],
   };
   for (const [name, ids] of Object.entries(responsibilities)) {
     for (const id of ids) {

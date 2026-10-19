@@ -346,7 +346,15 @@
 .app-shell #libraryRoot p { font-size: 13px; line-height: 1.85; }
 .app-shell #libraryRoot [role=status] { padding: 11px 14px; border-radius: 7px; font-size: 12px; }
 .app-shell #libraryRoot [role=status]:empty { display: none; }
-.app-shell .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.app-shell .settings-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .9fr); gap: 24px; align-items: start; }
+.app-shell .settings-column { display: grid; align-content: start; gap: 24px; min-width: 0; }
+.app-shell .profile-card .device-profile { padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; }
+.app-shell :is(.profile-card .device-profile, .preferences-card .conversation-preferences) > summary { padding: 0; font-size: 17px; font-weight: 650; line-height: 1.6; }
+.app-shell .profile-card .profile-intro { margin: 14px 0 10px; font-size: 13px; }
+.app-shell .profile-card .profile-storage { margin: 10px 0; font-size: 11px; }
+.app-shell .profile-card .profile-status { margin: 10px 0; font-size: 12px; }
+.app-shell .profile-card .profile-list { max-height: 480px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; margin: 16px 0; }
+.app-shell .profile-card .profile-empty { margin: 0; padding: 16px; border: 1px dashed #cdded3; border-radius: 8px; background: var(--surface-soft); color: var(--muted); font-size: 13px; }
 .app-shell .settings-card { min-width: 0; margin: 0; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .app-shell :is(.settings-card, .preferences-card, .trip-settings) > h3 { margin: 0 0 16px; font-size: 17px; font-weight: 650; }
 .app-shell .settings-card > .dialog-heading { position: static; top: auto; padding: 0; margin: 0 0 18px; background: transparent; }
@@ -362,9 +370,10 @@
 .app-shell .connection-row p { margin-top: 5px; font-size: 12px; }
 .app-shell .small-badge { font-size: 10px; white-space: nowrap; }
 .app-shell .settings-card .dialog-actions { margin-top: 18px; }
-.app-shell #tripOptions { padding: 0; margin-top: 12px; border: 0; border-radius: 0; }
-.app-shell #tripOptions > summary { display: list-item; margin: 0 0 15px; padding: 0 0 13px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.6; font-weight: 500; }
-.app-shell #tripOptions > summary span { margin-left: 6px; font-size: 11px; }
+.app-shell #tripOptions { padding: 0; margin: 0; border: 0; border-radius: 0; }
+.app-shell #tripOptions > summary { display: list-item; margin: 0; padding: 0; font-size: 17px; line-height: 1.6; font-weight: 650; }
+.app-shell #tripOptions[open] > summary { margin-bottom: 16px; }
+.app-shell #tripOptions > summary span { margin-left: 6px; font-size: 11px; font-weight: 400; }
 .app-shell #tripOptions > .trip-help { padding: 0; margin-bottom: 18px; font-size: 12px; }
 .app-shell #tripOptions > fieldset { padding: 0; }
 .app-shell .trip-grid { gap: 16px 14px; }
@@ -375,16 +384,15 @@
 .app-shell .companion-fields label { min-height: 32px; font-size: 12px; }
 .app-shell .companion-fields input { width: 16px; height: 16px; }
 .app-shell .trip-reset { min-height: 36px; padding: 8px 11px; border-radius: 7px; font-size: 12px; }
-.app-shell .preferences-card { grid-column: 1 / -1; }
-.app-shell .preferences-card .conversation-preferences { margin: 12px 0 0; padding: 0; border: 0; font-size: 13px; }
+.app-shell .preferences-card .conversation-preferences { margin: 0; padding: 0; border: 0; font-size: 13px; }
 .app-shell .preferences-card summary { padding: 9px 0; font-size: 14px; cursor: pointer; }
 .app-shell .preferences-card .conversation-preferences > p { margin: 12px 0; color: var(--muted); font-size: 12px; }
-.app-shell .preferences-card fieldset { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0; padding: 15px 18px; border: 1px solid var(--line); border-radius: 8px; }
+.app-shell .preferences-card fieldset { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; margin: 16px 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
 .app-shell .preferences-card legend { padding: 0 7px; font-size: 12px; }
 .app-shell .preferences-card fieldset label { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; font-size: 13px; }
 .app-shell .preferences-card fieldset input { width: 16px; height: 16px; }
-.app-shell .preferences-card details > label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 24px 18px 0; font-size: 13px; }
-.app-shell .preferences-card details > label :where(input, select) { min-width: 100px; max-width: 220px; }
+.app-shell .preferences-card details > label { display: grid; gap: 7px; margin: 0 0 14px; font-size: 12px; }
+.app-shell .preferences-card details > label :where(input, select) { width: 100%; min-width: 0; max-width: none; min-height: 42px; padding: 9px 10px; font-size: 13px; border-radius: 7px; }
 .app-shell .preferences-card details > button { min-height: 40px; padding: 9px 13px; margin: 0 8px 0 0; border: 1px solid #cddcd2; border-radius: 7px; background: white; color: var(--green); font-size: 13px; }
 .app-shell .preferences-card .preference-status { font-size: 12px; color: var(--green); }
 
@@ -449,6 +457,11 @@
   .app-shell .active-stop-link { margin-left: 48px; }
 }
 
+@media (max-width: 1000px) {
+  .app-shell .settings-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .app-shell .settings-column { gap: 18px; }
+}
+
 @media (max-width: 880px) and (min-width: 701px) {
   .app-shell .workspace-main { padding: 18px; }
   .app-shell .workspace.explore-workspace { grid-template-columns: 285px minmax(0, 1fr); gap: 16px; }
@@ -464,7 +477,6 @@
   .app-shell .place-search label { grid-template-columns: minmax(0, 1fr); }
   .app-shell .settings-grid { gap: 18px; }
   .app-shell .settings-card { padding: 20px; }
-  .app-shell .trip-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 700px) {
@@ -579,13 +591,11 @@
   .app-shell .settings-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .app-shell .settings-card { padding: 20px; }
   .app-shell #tripOptions { padding-top: 0; padding: 0; }
-  .app-shell #tripOptions > summary { margin: 0 0 16px; padding: 0 0 13px; }
+  .app-shell .profile-card .profile-list { max-height: none; overflow-y: visible; }
   .app-shell .trip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; }
   .app-shell .trip-grid :where(input, select) { padding: 9px 8px; }
   .app-shell .preferences-card { grid-column: auto; }
   .app-shell .preferences-card fieldset { gap: 10px 16px; padding: 12px 14px; }
-  .app-shell .preferences-card details > label { display: flex; justify-content: space-between; margin: 0 0 14px; }
-  .app-shell .preferences-card details > label :where(input, select) { max-width: 58%; flex: 1; }
   .app-shell .preferences-card details > button { min-height: 44px; margin-top: 5px; }
   .app-shell .settings-card .dialog-actions { gap: 10px; }
   .app-shell .settings-card .dialog-actions > .primary-btn { min-width: 0; }

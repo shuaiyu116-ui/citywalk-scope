@@ -56,7 +56,7 @@ export function createEditorView({ getSession, publish, selectStop, invalidate, 
     panel.append(el('p', session.draft ? '以下为编辑草稿。地图、卡片、时间轴和导出仍显示已提交版本；计算并提交后统一更新。' : '可先调整多项，再计算并提交。必去锁定防止删除/换点，仍允许排序和修改停留。'));
     const message = el('p', error, 'editor-status'); message.setAttribute('role', 'status'); panel.append(message);
     const controls = el('div', '', 'editor-actions');
-    controls.append(button(session.busy ? '正在重算…' : '计算并提交草稿', () => commit(), !session.draft || session.busy), button('放弃草稿', () => { session.discard(); resetForms?.(); error = ''; failed = false; render(); }, !session.draft), button('撤销上次提交', () => { invalidate(); publish(session.undo()); error = '已恢复上一版，版本号继续递增。'; render(); }, !session.history.length));
+    controls.append(button(session.busy ? '正在重算…' : '计算并提交草稿', () => commit(), !session.draft || session.busy), button('放弃草稿', () => { session.discard(); resetForms?.(); error = ''; failed = false; render(); }, !session.draft), button('撤销上次提交', () => { invalidate(); publish(session.undo(), { undo: true }); error = '已恢复上一版，版本号继续递增。'; render(); }, !session.history.length));
     if (session.busy) controls.append(button('取消计算', () => { session.cancel(); error = '计算已取消，草稿保留。'; render(); }));
     if (failed) controls.append(button('重试草稿交通', () => { session.retry(); commit(); }), button('保留粗估/未知并提交', () => commit(true)));
     panel.append(controls);

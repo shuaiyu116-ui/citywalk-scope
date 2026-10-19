@@ -9,7 +9,7 @@ const hash = raw => {const z=gzipSync(Buffer.from(raw)); return '#cw1='+createHa
 test('share freezes full public version without storage/keys/proofs and refuses corruption, expiry and oversized streams', async () => {
   const {makeShareLink,readShare}=await import('../public/share.mjs');
   const {createPortable}=await import('../public/portable-route.mjs');
-  const route=fixture(), original=structuredClone(route);route.apiKey='SECRET';route.preferences={private:'PROFILE'};route.planProof='SIGNATURE';route.stops[0].placeProof='SIGNATURE';route.context.gps={lat:0};
+  const route=fixture(), original=structuredClone(route);route.apiKey='SECRET';route.preferences={private:'PROFILE'};route.profile={items:[{value:'PRIVATE-DEVICE-PROFILE'}]};route.planProof='SIGNATURE';route.stops[0].placeProof='SIGNATURE';route.context.gps={lat:0};
   const now=Date.parse('2026-10-16T00:00:00Z');
   const result=await makeShareLink(route,'https://example.org/?key=must-not-copy',{now,days:7});
   assert.equal(new URL(result.url).pathname,'/share.html');assert.equal(new URL(result.url).search,'');

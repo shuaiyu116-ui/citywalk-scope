@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/library.css">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/workspace.css">
+  <link rel="stylesheet" href="/profile.css">
   <script type="importmap">{"imports":{"three":"/vendor/three/three.module.js"}}</script>
 </head>
 <body class="app-shell">
@@ -83,19 +84,11 @@
     <section class="workspace-view" data-workspace-view="settings" aria-labelledby="settingsTitle" hidden>
       <div class="view-heading"><div><span class="eyebrow">旅行，按你的方式</span><h2 id="settingsTitle" data-view-title tabindex="-1">偏好设置</h2><p>连接 DS，补充出行条件，让接下来的规划更懂你。</p></div><a class="secondary-btn" href="#explore" data-workspace-link="explore">继续对话 <i data-lucide="arrow-up-right"></i></a></div>
       <div class="settings-grid view-content">
-  <section id="settingsDialog" class="workspace-card settings-card settings-surface"><div class="dialog-heading"><div><h3>AI 与数据连接</h3></div><button class="icon-btn" id="closeSettings" aria-label="返回探索" title="返回探索"><i data-lucide="arrow-up-right"></i></button></div>
-    <p class="dialog-intro" id="aiSetupHint">填入自己的 DeepSeek Key，即可规划示例以外的行程。</p>
-    <form id="settingsForm">
-      <label class="field-label" for="deepseekKey">DeepSeek API Key <span>可选</span></label><div class="key-input"><input id="deepseekKey" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false"><button type="button" class="icon-btn" id="toggleKey" aria-label="显示 Key" title="显示 Key"><i data-lucide="eye"></i></button></div>
-      <p class="privacy-note">Key 仅保留在当前标签页会话中，经本机服务转发至 DeepSeek，不写入项目文件。</p>
-      <div class="connection-row"><i data-lucide="map-pin-house"></i><div><strong>携程地点</strong><p id="ctripConfigStatus">提供景点位置与来源信息</p></div><span class="small-badge">地点查询</span></div>
-      <div class="dialog-actions"><button type="button" class="secondary-btn" id="clearKey">清除 Key</button><button type="button" class="primary-btn" id="saveSettings">保存设置<i data-lucide="check"></i></button></div>
-    </form>
-  </section>
-
-        <section class="workspace-card trip-settings"><h3>本次出行条件</h3>
+        <div class="settings-column settings-primary">
+        <section class="workspace-card profile-card" aria-label="用户画像"><div id="profileRoot"></div></section>
+        <section class="workspace-card trip-settings" aria-label="本次出行条件">
         <details class="trip-options" id="tripOptions" open>
-          <summary>补充出行条件 <span>选填</span></summary>
+          <summary>本次出行条件 <span>选填 · 仅用于这次规划</span></summary>
           <p class="trip-help">也可以直接在对话中告诉我。这些选项用于补充日期、交通和同行需求。</p>
           <fieldset id="tripFields">
             <legend class="sr-only">本次出行条件</legend>
@@ -104,8 +97,8 @@
               <label for="tripDayCount">天数<input form="routeForm" id="tripDayCount" type="number" min="1" max="14" step="1" placeholder="默认 1 天"></label>
               <label for="tripDailyStart">每天开始<input form="routeForm" id="tripDailyStart" type="time"></label>
               <label for="tripDailyEnd">每天结束<input form="routeForm" id="tripDailyEnd" type="time" aria-describedby="tripTimeHint"></label>
-              <label class="trip-wide" for="tripTransport">交通偏好<select form="routeForm" id="tripTransport"><option value="">未指定（默认步行）</option value="walking">步行</option><option value="cycling">骑行</option><option value="transit">公共交通</option><option value="driving">自驾</option><option value="taxi">打车</option><option value="mixed">混合出行</option></select></label>
-              <label class="trip-wide" for="tripMaxWalk">每天最多步行（km）<input form="routeForm" id="tripMaxWalk" type="number" min="0" max="50" step="0.1" placeholder="未指定，0 表示不步行"></label>
+              <label for="tripTransport">交通偏好<select form="routeForm" id="tripTransport"><option value="">未指定（默认步行）</option><option value="walking">步行</option><option value="cycling">骑行</option><option value="transit">公共交通</option><option value="driving">自驾</option><option value="taxi">打车</option><option value="mixed">混合出行</option></select></label>
+              <label for="tripMaxWalk">每天最多步行（km）<input form="routeForm" id="tripMaxWalk" type="number" min="0" max="50" step="0.1" placeholder="未指定，0 表示不步行"></label>
             </div>
             <p class="trip-help" id="tripTimeHint">时段按每天重复；结束早于开始表示次日，起止不可相同。时刻为计划推算。</p>
             <fieldset class="companion-fields"><legend>同行条件（可多选）</legend>
@@ -115,7 +108,19 @@
           </fieldset>
         </details>
         </section>
-        <section class="workspace-card preferences-card"><h3>我的游玩偏好</h3><div id="preferencesRoot" class="preference-settings"></div></section>
+        </div>
+        <div class="settings-column settings-secondary">
+          <section id="settingsDialog" class="workspace-card settings-card settings-surface"><div class="dialog-heading"><div><h3>AI 与数据连接</h3></div><button class="icon-btn" id="closeSettings" aria-label="返回探索" title="返回探索"><i data-lucide="arrow-up-right"></i></button></div>
+            <p class="dialog-intro" id="aiSetupHint">填入自己的 DeepSeek Key，即可规划示例以外的行程。</p>
+            <form id="settingsForm">
+              <label class="field-label" for="deepseekKey">DeepSeek API Key <span>可选</span></label><div class="key-input"><input id="deepseekKey" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false"><button type="button" class="icon-btn" id="toggleKey" aria-label="显示 Key" title="显示 Key"><i data-lucide="eye"></i></button></div>
+              <p class="privacy-note">Key 仅保留在当前标签页会话中，经本机服务转发至 DeepSeek，不写入项目文件。</p>
+              <div class="connection-row"><i data-lucide="map-pin-house"></i><div><strong>携程地点</strong><p id="ctripConfigStatus">提供景点位置与来源信息</p></div><span class="small-badge">地点查询</span></div>
+              <div class="dialog-actions"><button type="button" class="secondary-btn" id="clearKey">清除 Key</button><button type="button" class="primary-btn" id="saveSettings">保存设置<i data-lucide="check"></i></button></div>
+            </form>
+          </section>
+          <section class="workspace-card preferences-card" aria-label="我的游玩偏好"><div id="preferencesRoot" class="preference-settings"></div></section>
+        </div>
       </div>
     </section>
     <div class="storyboard" id="storyboard" hidden aria-hidden="true"></div>

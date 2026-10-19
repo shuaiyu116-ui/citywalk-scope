@@ -1,0 +1,31 @@
+.device-profile { border: 1px solid var(--border, #dbe4e2); border-radius: 18px; background: var(--surface, #fff); padding: 20px; margin-bottom: 18px; }
+.device-profile > summary { cursor: pointer; font-size: 1.08rem; font-weight: 700; }
+.profile-count { color: var(--muted, #687773); font-size: .86rem; font-weight: 400; }
+.device-profile p { line-height: 1.65; overflow-wrap: anywhere; }
+.profile-intro, .profile-storage, .profile-status { font-size: .88rem; color: var(--muted, #687773); }
+.profile-storage-unavailable { color: #925219; background: #fff4dd; padding: 10px 12px; border-radius: 10px; }
+.profile-list { display: grid; gap: 16px; margin: 18px 0; }
+.profile-category { min-width: 0; }
+.profile-category h3 { margin: 0 0 9px; font-size: .97rem; }
+.profile-item { padding: 14px; border: 1px solid var(--border, #dbe4e2); border-radius: 12px; margin-top: 10px; background: var(--surface-soft, #f8faf9); }
+.profile-item h4 { margin: 0 0 6px; font-size: .95rem; }
+.profile-item .profile-value { margin: 0 0 8px; white-space: pre-wrap; }
+.profile-meta, .profile-evidence { font-size: .78rem; color: var(--muted, #687773); }
+.profile-evidence { margin: 8px 0; }
+.profile-evidence summary { cursor: pointer; }
+.profile-evidence p { margin: 7px 0; }
+.profile-actions, .profile-item-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.device-profile button { width: auto; min-height: 36px; padding: 7px 12px; border: 1px solid var(--border, #dbe4e2); border-radius: 9px; background: var(--surface, #fff); color: inherit; cursor: pointer; font: inherit; font-size: .86rem; }
+.device-profile button:hover { background: #edf5f1; }
+.device-profile button:disabled { opacity: .5; cursor: default; }
+.device-profile button:focus-visible, .device-profile summary:focus-visible { outline: 3px solid #42a78a; outline-offset: 3px; }
+.profile-edit { display: grid; gap: 11px; margin-top: 13px; }
+.profile-edit label { display: grid; gap: 6px; font-size: .86rem; }
+.profile-edit input, .profile-edit textarea, .profile-edit select { box-sizing: border-box; width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--border, #dbe4e2); border-radius: 9px; background: var(--surface, #fff); color: inherit; font: inherit; }
+.profile-edit textarea { resize: vertical; }
+.profile-edit button { justify-self: start; }
+.profile-edit-status { margin: 0; color: #925219; }
+.profile-confirm { margin-top: 14px; padding: 12px; border: 1px solid #e4c4b0; border-radius: 10px; }
+.profile-confirm button { margin-right: 8px; }
+.device-profile [hidden] { display: none !important; }
+@media (max-width: 600px) { .device-profile { padding: 15px; } .profile-item { padding: 12px; } .profile-actions > button { flex: 1; } }

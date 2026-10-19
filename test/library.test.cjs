@@ -6,7 +6,7 @@ async function prepared(){const route=fixture();const {applySchedule}=await impo
 async function intent(route){const {copyIntent}=await import('../public/share.mjs');const b=copyIntent(route);b.context=route.context;b.days.forEach((d,i)=>d.lodging=route.days[i].lodging?.text);b.stops.forEach((s,i)=>{s.visit=route.stops[i].visit;s.progress=route.stops[i].progress;s.addressHint='';});b.bookings=route.legs.map(l=>l.booking||null);return b;}
 test('library preserves complete personal snapshots/history and sanitizes backups without importing proof or replacing identities',async()=>{
  const {appendVersion,localRoute,backupText,parseBackup}=await import('../public/library.mjs');const {createPortable}=await import('../public/portable-route.mjs');const {EditSession}=await import('../public/itinerary-editor.mjs');
- const r=await prepared();r.planProof='PRIVATE-PROOF';r.apiKey='PRIVATE-KEY';r.stops[0].placeProof='PRIVATE-PROOF';
+ const r=await prepared();r.planProof='PRIVATE-PROOF';r.apiKey='PRIVATE-KEY';r.profile={items:[{value:'PRIVATE-DEVICE-PROFILE'}]};r.stops[0].placeProof='PRIVATE-PROOF';
  let saved=appendVersion(null,'我的旅行',r);const first=saved.versions[0], original=createPortable(r).route;
  r.title='changed';saved=appendVersion(saved,saved.name,r);assert.equal(first.packet.route.title,original.title);
  const recovered=localRoute(first.packet);delete recovered.restoration;assert.deepEqual(recovered,original);

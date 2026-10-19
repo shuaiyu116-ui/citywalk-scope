@@ -1,7 +1,7 @@
 import { interestOptions, paceOptions, normalizePreferences, cleanText } from './conversation-state.mjs';
 
 // The transcript is presentation state; only explicit planning state is sent to the server.
-export function createConversationView({ root, preferencesRoot, memory, getRoute, onMode }) {
+export function createConversationView({ root, preferencesRoot, memory, getRoute, onMode, onPreferencesChange }) {
   const el = (tag, value = '', className = '') => {
     const node = document.createElement(tag); node.textContent = value; node.className = className; return node;
   };
@@ -10,7 +10,7 @@ export function createConversationView({ root, preferencesRoot, memory, getRoute
   next.type = fresh.type = 'button'; controls.append(next, fresh);
   const status = el('p', '', 'conversation-mode');
   const prefs = el('details', '', 'conversation-preferences');
-  prefs.append(el('summary', '我的游玩偏好'), el('p', '偏好仅在本页保留。你在对话中提出的新要求优先。'));
+  prefs.append(el('summary', '我的游玩偏好'), el('p', '偏好保存在此设备的当前浏览器中。你在对话中提出的新要求优先。'));
   const interests = el('fieldset'); interests.append(el('legend', '兴趣'));
   const inputs = interestOptions.map(value => {
     const label = el('label'), input = document.createElement('input');
@@ -32,10 +32,12 @@ export function createConversationView({ root, preferencesRoot, memory, getRoute
   save.onclick = () => {
     if (!budget.reportValidity()) return;
     memory.preferences = normalizePreferences({ interests: inputs.filter(input => input.checked).map(input => input.value), pace: pace.value, transportMode: mode.value, maxWalkKm: budget.value });
+    onPreferencesChange?.(memory.preferences);
     saved.textContent = '已保存，接下来的规划会参考这些偏好。'; render();
   };
   forget.onclick = () => {
     memory.preferences = normalizePreferences(); inputs.forEach(input => { input.checked = false; }); pace.value = mode.value = budget.value = '';
+    onPreferencesChange?.(memory.preferences);
     saved.textContent = '偏好已清除。'; render();
   };
   next.onclick = () => { if (getRoute()) onMode('edit'); };
@@ -65,9 +67,17 @@ export function createConversationView({ root, preferencesRoot, memory, getRoute
     fresh.setAttribute('aria-pressed', String(memory.mode === 'new'));
     next.hidden = !getRoute();
   }
+  function syncPreferences(value = memory.preferences) {
+    memory.preferences = normalizePreferences(value);
+    inputs.forEach(input => { input.checked = memory.preferences.interests.includes(input.value); });
+    pace.value = memory.preferences.pace; mode.value = memory.preferences.transportMode;
+    budget.value = memory.preferences.maxWalkKm ?? '';
+  }
+  syncPreferences();
   resetMessages(); render();
   return {
     render,
+    syncPreferences,
     submitted(prompt) { addMessage('user', prompt); root.classList.remove('awaiting-answer'); lastQuestion = ''; },
     reply(message) { addMessage('assistant', message); },
     resetMessages,

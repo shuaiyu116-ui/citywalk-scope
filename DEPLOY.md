@@ -29,6 +29,37 @@
 3. 在 Environment 私下配置 MCP Token 和可选项；个人 DeepSeek Key 可仅由网页使用者输入。
 4. Live 后执行下方真实验收，再宣布新版上线。`/` 健康只证明 HTTP 页面能返回，不证明上游成功。
 
+## 在本机代理环境更新现有网站
+
+2026-10-19 本机系统代理为 `127.0.0.1:10808`。网页发布仓库为 `output/deploy-20261018/repository`，远端 `shuaiyu116-ui/citywalk-scope`，分支 `main`。根工作区的新功能必须先同步到发布仓库；直接推送旧发布副本不会包含新修改。以下命令由发布者在 PowerShell 执行，代理地址只用于本次推送，不修改全局 Git 配置。
+
+先生成本次白名单发布目录并同步（没有删除步骤，保留发布仓库的 Git 历史）：
+
+```powershell
+$ErrorActionPreference = 'Stop'
+Set-Location -LiteralPath 'D:\06_Code\codex\携程黑客松比赛Astra大人版本'
+$releaseLabel = 'web-profile-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
+& 'D:\01-Softwares\node\node.exe' scripts/build-release.cjs $releaseLabel
+if ($LASTEXITCODE -ne 0) { throw '打包失败，停止发布' }
+robocopy "output\$releaseLabel\stage\CitywalkScope" 'output\deploy-20261018\repository' /E /R:1 /W:1 /NFL /NDL /NJH /NJS
+if ($LASTEXITCODE -ge 8) { throw '同步失败，停止发布' }
+Set-Location -LiteralPath 'output\deploy-20261018\repository'
+git add --all
+if ($LASTEXITCODE -ne 0) { throw '暂存失败，停止发布' }
+git commit -m "Add device user profiles and rearrange settings"
+if ($LASTEXITCODE -ne 0) { throw '提交未完成，请查看终端提示' }
+```
+
+提交成功后推送：
+
+```powershell
+git -c http.proxy=http://127.0.0.1:10808 push origin main
+```
+
+在 Render 打开原网页服务 `citywalk-scope` 的部署记录，等待最新提交为 **Live**；未自动部署时选择 **Manual Deploy → Deploy latest commit**。访问 <https://citywalk-scope.onrender.com/#settings> 并按 `Ctrl+F5` 查看设置页。既有 Render 环境变量沿用，无需上传本地 `.env`。本地 `localhost` 的画像与线上属于不同 origin，不会随代码推送迁移。
+
+本节仅记录操作方法；写入本节时没有运行打包、提交、推送或线上验证。
+
 ## Docker 与服务器
 
 在干净解压目录运行：
